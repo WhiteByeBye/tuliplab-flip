@@ -1,0 +1,61 @@
+\documentclass{amsart}
+\synctex=1
+
+%=================================================================
+% 
+\newcount\DraftStatus  % 0 suppresses notes to selves in text
+\DraftStatus=1   % TODO: set to 0 for final version
+%=================================================================
+
+%=================================================================
+\usepackage{comment}
+%=================================================================
+%
+\includecomment{JournalOnly}  
+\includecomment{ConferenceOnly}  
+\includecomment{TulipStyle}
+%
+%=================================================================
+\input{preamble}
+
+
+%=================================================================
+%
+\begin{document}
+%
+%=================================================================
+%
+\title[Xu's report]{Flip00 Final Presetantion Report}%
+
+\author{Rongxin Xu}
+\address[A.~1]{School of Business Administration,\\ 
+Hunan University, Changsha 410012, China}%
+\email[A.~1]{rongxin_xu@163.com}
+
+%\thanks{Thanks to \ldots}%
+\subjclass{Artificial Intelligence}%
+\keywords{Machine Learning, Data Mining, ...}%
+\date{\gitAuthorDate}%
+
+\begin{abstract}
+The abstract will be put here, ....
+\end{abstract}
+
+\maketitle
+\tableofcontents
+
+\newpage
+%=================================================================
+
+\input{mainbody}
+
+% ----------------------------------------------------------------
+\newpage
+\bibliography{tuliplab,mybib}
+\bibliographystyle{plainnat}
+%=================================================================
+
+\listoftodos
+
+\end{document}
+

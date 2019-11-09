@@ -1,0 +1,7 @@
+We have \SI{10}{\hertz},
+\si{\kilogram\metre\per\second},
+the range: \SIrange{10}{100}{\hertz}.
+$\nicefrac[]{1}{2}$.
+
+\missingfigure{Make a sketch of the structure of a trebuchet.}
+
