@@ -4,45 +4,36 @@
 
 \subsection{Problem Statement}
 \
-
+This is a problem with time-series prediction.
 After a month of making scientific observations 
 and taking careful measurements, 
-can determined that 900 ghouls, ghosts, and goblins
-like what is shown in~\Cref{fig:animal}  .
-The raw dataset contains train set with 371 
-samples and 529 unlabeled samples as test set.
-Through the train data, find the relationship
-between the attributes and species, 
-%and then identify 371 of the ghastly creatures.
-This is a test information.
-
-
-\begin{figure}[htbp]
-	\centering
-	%\graphicspath{figures}
-	\includegraphics[scale=0.3]{figures/bar.eps}
-	\caption{The Picture of Ghastly}\label{fig:animal}
-\end{figure}
+can predict total sales for every product and store in the next month.
+The raw dataset contains train set with 2935849 
+samples and 214200 unlabeled samples as test set.
+Through the train data, predict total sales for every product and store in the 
+next month.
 
 
 \subsection{Data List}
 \
 
-There are bone length measurements, 
-severity of rot, extent of soullessness, 
-and other characteristics of the intruders,
+There are six data sets with a total of 11 attributes,
 the fllowings are the  
 name and meaning of attributes
 
 
 \begin{description}
-	\item[id] id of the creature
-	\item[bone\_length] average length of bone in the creature, normalized between 0 and 1
-	\item[rotting\_flesh] percentage of rotting flesh in the creature
-	\item[hair\_length] average hair length, normalized between 0 and 1
-	\item[has\_soul] percentage of soul in the creature
-	\item[Color] dominant color of the creature: 'white','black','clear','blue','green','blood'
-	\item[type] target variable: 'Ghost', 'Goblin', and 'Ghoul'
+	\item[id]  an Id that represents a (Shop, Item) tuple within the test set.
+	\item[shop\_id] unique identifier of a shop.
+	\item[item\_id] unique identifier of a product.
+	\item[item\_category\_id] unique identifier of item category.
+	\item[item\_cnt\_day] percentage of soul in the creature.
+	\item[item\_price] current price of an item.
+	\item[date] date in format dd/mm/yyyy.
+	\item[date\_block\_num] unique identifier of item category.
+	\item[item\_name] name of item.
+	\item[shop\_name] name of shop.
+	\item[item\_category\_name] name of item category.
 \end{description}
 
 
@@ -64,9 +55,9 @@ to train the models.
 \
 
 There are many machine learning algorithms 
-can solve the three classification problem,
-such as ensemble algorithms,
-decision tree algorithm and so on.
+can solve the Time series prediction problem,
+such as xgboost,
+random forest and so on.
 Use CV to find the best parameters of the algorithms 
 and then validate with testing data.
 But the most important thing is 
@@ -95,35 +86,44 @@ for classification problem:
 \
 
 The following  ~\cref{tbl:data information}
-is the statistical result of the attribute values.
-There are 4 numerical variables and 1 categorical,
+is the statistical result of each attribute in sales\_train.csv.
+There are 6 numerical variables,
 and no missing values.
-Numerical columns are either normalized or show a percentage, 
-so no need to scale them. 
+The data is very clean and complete, So let's start visual analysis.
 
-\begin{table}[htbp]  \centering
-	\caption{Data Information}
-	\label{tbl:data information}
-	\begin{tabular}{ccccccc}
-		\hline
-		% after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
-		& bone\_length & rotting\_flesh & hair\_length & has\_soul & color & type\\
-		\hline
-		count & 371.0 & 371.0 & 371.0 & 371.0 & 371 & 371 \\
-		unique & NaN & NaN & NaN & NaN & 6 & 3 \\
-		top & NaN & NaN & NaN & NaN & white & Ghoul \\
-		freq & NaN & NaN & NaN & NaN & 137 & 129\\
-		mean & 0.434160 & 0.506848 & 0.529114 & 0.471392 & NaN & NaN \\
-		std & 0.132833 & 0.146358 & 0.169902 & 0.176129 & NaN & NaN \\
-		min & 0.061032 & 0.095687 & 0.134600 & 0.009402 & NaN & NaN \\
-		25\% & 0.340006 & 0.414812 & 0.407428 & 0.348002 & NaN & NaN \\
-		50\% & 0.43891 & 0.501552 & 0.538642 & 0.466372 & NaN & NaN\\
-		75\% & 0.517223 & 0.603977 & 0.647244 & 0.600610 & NaN & NaN\\
-		max &  0.817001 & 0.932466 & 1.000000 & 0.935721 & NaN & NaN\\
-		\hline 
-		%\bottomrule
-	\end{tabular}
-\end{table}
+
+\begin{table}[htbp]
+	\centering
+	\caption{Add caption}
+	\begin{tabular}{p{2.125em}rrrrrr}
+		\toprule
+		\multicolumn{1}{c}{} & 
+		\multicolumn{1}{p{4em}}{\textbf{date\_block\_num}} & 
+		\multicolumn{1}{p{4em}}{\textbf{shop\_id}} & 
+		\multicolumn{1}{p{4em}}{\textbf{item\_id}} & 
+		\multicolumn{1}{p{4em}}{\textbf{item\_price}} & 
+		\multicolumn{1}{p{4em}}{\textbf{item\_cnt\_day}} & 
+		\multicolumn{1}{p{4em}}{\textbf{item\_category\_id}} \\
+		\midrule
+		\textbf{count} & 2935849 & 2935849 & 2935849 & 2935849 & 2935849 & 
+		2935849 \\
+		\textbf{mean} & 14.57 & 33    & 10197.23 & 890.62 & 1.24  & 40 \\
+		\textbf{std} & 9.42  & 16.23 & 6324.3 & 1726.44 & 2.62  & 17.1 \\
+		\textbf{min} & 0     & 0     & 0     & -1    & -22   & 0 \\
+		\multicolumn{1}{r}{\textbf{25\%}} & 7     & 22    & 4476  & 249   & 
+		1     & 28 \\
+		\multicolumn{1}{r}{\textbf{50\%}} & 14    & 31    & 9343  & 399   & 
+		1     & 40 \\
+		\multicolumn{1}{r}{\textbf{75\%}} & 23    & 47    & 15684 & 999   & 
+		1     & 55 \\
+		\textbf{max} & 33    & 59    & 22169 & 307980 & 2169  & 83 \\
+		\bottomrule
+	\end{tabular}%
+	\label{tbl:data information}%
+\end{table}%
+
+
+
 
 
 \subsection{Data Visualization}
