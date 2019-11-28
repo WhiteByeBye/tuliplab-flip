@@ -39,18 +39,6 @@ name and meaning of attributes
 
 \subsection{Problem Analysis}
 
-\subsubsection{Train Data and Test Data}
-\
-
-Because this game is over, 
-it can't submit the predictive values for testing. 
-So I divide the raw train data into train data and test data, 
-and the ratio is 8:2. 
-Another vexed problem is the data too small, 
-so I use ten-fold cross-validation 
-to train the models.
-
-
 \subsubsection{Problem Possible Solutions}
 \
 
@@ -73,10 +61,7 @@ usually it has the following methods
 for classification problem:
 
 \begin{itemize}
-	\item F1 Score/AUC
-	\item Class Accuracy
-	\item Recall
-	\item Precision
+	\item RMSE
 \end{itemize} 
 
 
@@ -92,39 +77,28 @@ and no missing values.
 The data is very clean and complete, So let's start visual analysis.
 
 
-\begin{table}[htbp]
-	\centering
-	\caption{Add caption}
-	\begin{tabular}{p{2.125em}rrrrrr}
-		\toprule
-		\multicolumn{1}{c}{} & 
-		\multicolumn{1}{p{4em}}{\textbf{date\_block\_num}} & 
-		\multicolumn{1}{p{4em}}{\textbf{shop\_id}} & 
-		\multicolumn{1}{p{4em}}{\textbf{item\_id}} & 
-		\multicolumn{1}{p{4em}}{\textbf{item\_price}} & 
-		\multicolumn{1}{p{4em}}{\textbf{item\_cnt\_day}} & 
-		\multicolumn{1}{p{4em}}{\textbf{item\_category\_id}} \\
-		\midrule
-		\textbf{count} & 2935849 & 2935849 & 2935849 & 2935849 & 2935849 & 
-		2935849 \\
-		\textbf{mean} & 14.57 & 33    & 10197.23 & 890.62 & 1.24  & 40 \\
-		\textbf{std} & 9.42  & 16.23 & 6324.3 & 1726.44 & 2.62  & 17.1 \\
-		\textbf{min} & 0     & 0     & 0     & -1    & -22   & 0 \\
-		\multicolumn{1}{r}{\textbf{25\%}} & 7     & 22    & 4476  & 249   & 
-		1     & 28 \\
-		\multicolumn{1}{r}{\textbf{50\%}} & 14    & 31    & 9343  & 399   & 
-		1     & 40 \\
-		\multicolumn{1}{r}{\textbf{75\%}} & 23    & 47    & 15684 & 999   & 
-		1     & 55 \\
-		\textbf{max} & 33    & 59    & 22169 & 307980 & 2169  & 83 \\
-		\bottomrule
-	\end{tabular}%
-	\label{tbl:data information}%
-\end{table}%
 
-
-
-
+\begin{table}[htbp]  \centering
+	\caption{Data Information}
+	\label{tbl:data information}
+	\begin{tabular}{ccccccc}
+		\hline
+		% after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
+		& date\_block\_num & shop\_id & item\_id & item\_price & item\_cnt\_day 
+		& item\_category\_id\\
+		\hline
+		count & 2935849 & 2935849 & 2935849 & 2935849 & 2935849 & 2935849 \\
+		mean & 14.57 & 33 & 10197.23 & 890.62 & 1.24 & 40 \\
+		std & 9.42 & 16.23 & 6324.3 & 1726.44 & 2.62 & 17.1 \\
+		min & 0 & 0 & 0 & -1 & -22 & 0 \\
+		25\%  & 7 & 22 & 4476 & 249 & 1 & 28 \\
+		50\%  & 14 & 31 & 9343 & 399 & 1 & 40\\
+		75\% & 23 & 47 & 15684 & 999 & 1 & 55\\
+		max & 33 & 59 & 22169 & 307980 & 2169 & 83\\
+		\hline 
+		%\bottomrule
+	\end{tabular}
+\end{table}
 
 \subsection{Data Visualization}
 \
@@ -146,13 +120,8 @@ the construction of the Feature.
 \
 
 The figure ~\Cref{fig:his_1} 
-shows the mean of the four numerical variables  
-and the figure ~\Cref{fig:his_2} 
-is the number of different color 
-about types of ghastly creatures.
-It seems that all numerical features may be useful, 
-but many colors are evenly distributes among the monsters,
-which means they maybe have little effect on classification.
+shows the distribution of the various attributes. It seems that item\_id and 
+shop\_id has a huge impact on sales and sales tend to decline with the date.
 
 
 \begin{figure}[htbp]
@@ -160,15 +129,9 @@ which means they maybe have little effect on classification.
 	
 	%\graphicspath{{figures/}{mine/}}
 	\includegraphics[scale=0.3]{figures/his_1.eps}
-	\caption{The Mean of Four Numerical Variables}\label{fig:his_1}
+	\caption{Distribution of individual variables}\label{fig:his_1}
 \end{figure}
 
-\begin{figure}[htbp]
-	\centering
-	
-	\includegraphics[scale=0.3]{figures/his_2.eps}
-	\caption{Color distribution Grouped by Type}\label{fig:his_2}
-\end{figure}
 
 \subsubsection{Boxplot}
 \
@@ -180,26 +143,18 @@ visually identify outliers in the dataset or
 determine the data dispersion and 
 bias of the data set. 
 Through the figure ~\Cref{fig:boxplot}, 
-we know that the two types of Ghost and Ghoul 
-in the monster have higher discrimination 
-on the four variables, 
-while Goblin is in the middle position, 
-which intersects with the other two types of features.
-Based on the above observation,
-we guess that the predictive accuracy of Ghost and Ghoul 
-will be better than Goblin.
-And the outliers are very small,
-which can be ignored.
+we know that the outliers are very small,
+so can be ignored.
 
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[scale=0.3]{figures/boxplot.eps}
-	\caption{Boxplot Grouped by Type}\label{fig:boxplot}
+	\caption{Boxplot of item_cnt_day and item_price}\label{fig:boxplot}
 \end{figure}
 
 
-\subsubsection{Pairwise Plot} 
+\subsubsection{Scatterplot Plot} 
 \
 
 Pairwise plot is 
@@ -207,7 +162,7 @@ a favorite in exploratory analysis
 to understand the relationship 
 between all possible pairs 
 of numeric variables. 
-This pairplot ~\Cref{fig:feature_scatterplot} 
+This pairplot ~\Cref{fig:scatterplot} 
 shows that data is distributed normally. 
 And while most pairs are widely scattered 
 (in relationship to the type), 
@@ -218,8 +173,8 @@ So it may need to reassemble the data.
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.4]{figures/pairplot.eps}
-	\caption{Feature Scatterplot}\label{fig:feature_scatterplot}
+	\includegraphics[scale=0.4]{figures/scatterplot.eps}
+	\caption{Scatterplot of item_cnt_day and item_price}\label{fig:scatterplot}
 \end{figure}
 
 \subsubsection{Correllogram}
@@ -230,85 +185,19 @@ visually see the correlation metric
 between all possible pairs of numeric variables 
 in a given dataframe. 
 This figure ~\Cref{fig:corr} 
-make it convenient for us to analyze features,
-especially their impact on the 'type' column. 
-As we can see the 'type' column 
-has a high value of negative correlation 
-with columns 'has\_soul' and 'rotting\_flesh',
-but the correlation 
-with the 'hair\_length' is not very big.
-There is no obvious linear relationship 
-between these variables.
+make it convenient for us to analyze features.
+You can see that the item_cnt_day related 
+to the target to be analyzed is item_id and item_price.
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.4]{figures/corr.eps}
+	\includegraphics[scale=0.1]{figures/corr.eps}
 	\caption{Correllogram}\label{fig:corr}
-\end{figure}
-
-
-\subsubsection{Other Figures}
-
-
-The following pictures 
-are independent of 
-the choice of algorithm,
-Because they look great, 
-so I want to share with you.
-%如果有时间的话，把这三张图片放在一排，然后稍微介绍一下
-
-\begin{figure}[h]\centering
-	\includegraphics[scale=0.4]{figures/MHis.eps}
-	\caption{Marginal Histogram}
-\end{figure}
-
-\begin{figure}[h]\centering
-	\includegraphics[scale=0.4]{figures/BDF.eps}
-	\caption{Binary Density Function}
-\end{figure}
-
-\begin{figure}[h]\centering
-	%\graphicspath{{figures/}{mine/}}
-	\includegraphics[scale=0.4]{figures/MBDF.eps}
-	\caption{Marginal Binary Density Function}
 \end{figure}
 
 
 \subsection{Data Preparation}
 
-\subsubsection{Great New Features}
-\
-
-As it can be seen from 
-the pictures above 
-the data is distributed normally. 
-But some of them show clusters: 
-hair\_length and has\_soul, 
-hair\_length and bone\_length. 
-So I create new variables 
-with multiplication of these columns: 
-
-\begin{description}
-	\item[hair\_soul] row[hair\_length]*row[has\_soul] 
-	\item[hair\_bone]  row[hair\_length]*row[bone\_length] 
-	\item[bone\_soul]  row[bone\_length]*row[has\_soul] 
-	\item[hair\_soul\_bone]  row[hair\_length]*row[has\_soul]*row[bone\_length] 
-\end{description}
-
-
-Then analyse the new features in a pairplot, 
-showing the picture ~\Cref{fig:new_pairplot}
-below. 
-It can be seen from the picture that 
-there is a clear linear relationship 
-between the variables. 
-
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.3]{figures/hist_1.eps}
-	\caption{New Features Pairplot}\label{fig:new_pairplot}
-\end{figure}
 
 
 \subsubsection{Feature Selection}
@@ -362,27 +251,21 @@ is a histogram ordered by feature importance.
 	\caption{Feature Importance}\label{fig:feature_importance}
 \end{figure}
 
-We take the top seven features 
-with higher importance 
-to form a new train data, the rest are discarded.
+We take these features 
+to form a new train datad.
 
 
 \section{Methods}
 
 There are many machine learning algorithms 
-for classification problem. 
+for Time-series problem. 
 Choose the following algorithms
 as the base models of ensemble model,show the most important parameters.
 
 \begin{itemize}
 	\item RandomForest 
-	%\item Bagging
-	%\item GradientBoosting
-	\item LogisticRegression
-	\item SVC
-	\item KNeighbors 
 	\item XGBoost
-	\item Netual Network
+	\item LSTM
 \end{itemize}
 \subsection{Base Models}
 \
@@ -413,65 +296,7 @@ the mode of the individual tree output.
 	when selecting the optimal attribute 
 	cannot exceed this value.
 \end{description}
-
-
-
-
-\subsubsection{LogisticRegression}
-\
-
-Logistic regression is the algorithm that 
-processing a large amount of 
-observation data to 
-obtain mathematical expressions 
-that are in line with 
-the internal laws of things
-	
-	
-\begin{description}
-	\item[Penalty] Regular function
-	\item[C] Regular coefficient
-\end{description}
-	
-%J=sum(logloss(f(xi), yi)) + C* penalty
-
-
-%\frac{\partial f}{\partial x} = 2\,\sqrt{a}\,x
-\subsubsection{SVC}
-\
-
-The basic principle of the SVM algorithm is 
-to find a hyper plane that can 
-distinguish between two types, 
-so that the margin is the largest.
-
-
-\begin{description}
-	\item[kernel] kernel function
-	\item[C] penalty factor for error terms
-	\item[degree] order of polynomial kernel function
-\end{description}
-	
-\subsubsection{KNeighbors}
-\
-
-The meaning of the knn algorithm is that 
-enter new data without tags, 
-compare each feature of the new data with 
-each feature in the training set, 
-and select the classification tag with 
-the most similar feature (nearest neighbor: k)
-
-
-\begin{description}
-	\item[n_neighbors] number of neighbors to use 
-	by default for kneighbors queries
-	\item[leaf_size] leaf size passed to BallTree or KDTree
-	\item[p] power parameter for choosing 
-	the distance calculation formula
-	\item[weights] used in prediction
-	\item[algorithm] compute the nearest neighbors
-	\end{description}
+                  
 	
 \subsubsection{XGBoost}
 \
@@ -495,231 +320,86 @@ this is a functional optimization, multi-target.
 		in all trees when training each tree
 	\end{description}
 
-\subsubsection{Netual Network}
+\subsubsection{LSTM}
 \
 
-Netual network is widely used in various fields.
-It generally consists of 
-an Input Layer, a Hidden Layer, and an Output Layer. 
-Each layer is composed of Units. 
+Long short-term memory (LSTM) is an artificial recurrent neural network (RNN) 
+architecture used in the field of deep learning. LSTM has feedback connections. 
+It can not only process single data points (such as images), but also entire 
+sequences of data (such as speech or video). 
 	
 	
 \begin{description}
-	\item[hidden_layer_sizes] The i-th element represents 
+	\item[units] Output dimension 
 		the number of neurons in the i-th hidden layer
 	\item[activation] activation function
-	\item[solver] weight optimization solver
-	\item[learning_rate] weight update speed
+	\item[recurrent_activation] Activation function applied to the loop step
+	\item[use_bias] Boolean, whether to use bias term
 \end{description}
 
 
-\subsection{Ensemble Model}
-\
-
-There are many machine learning algorithms, 
-use the above machine learning algorithms 
-as Ensemble Model’s base models. 
-Through Grid Search and
-ten-fold cross-validation
-to find the optimal parameters.
 
 \section{Experiment and Analysis}
 
 In the Data Exploration, 
-I has created some new feaures.
-The following experiment is divided into two parts,
-one is to use the original train data, 
-the other is to use new features as train data.
-Grid Search make it easier to 
-determine a set of optimal parameters
-for these model I adpot.
-Because the train data is relatively small, 
-a ten-fold cross-validation is used. 
-Then I can test the trained models 
-using test data and 
-analyze the experimental results.
-And use the trained models as 
-the base models of ensemble model,
-then do experiment. 
+I has created some new feaures 
+and found some outliers.
+Because the number of outliers is very small, 
+after ignoring the outliers, the features 
+are selected for experiments based on their importance.
+Due to time constraints, I only conducted 
+experiments using the basic model, but 
+did not complete the ensemble model.
 %\WBJianginMarker
 
 \subsection{Base Models Training Result}
-\subsubsection{Original Train Data}
-\
 
 The following are the best parameters and 
 the Best Score in training of 
-the base models 
-in original train data. 
+the base models. 
 
 \begin{itemize}
 	\item Best Parameters of Models
 	\begin{description}
-		\item[RandomForest] 'criterion': 'entropy', 'max_depth': 5, 
-		'max_features': None, 'n_estimators': 100
-		\item[LogisticRegression] 'C': 1, 'penalty': 'l1'
-		\item[SVC] 'C': 10, 'degree': 3, 'kernel': 'linear'
-		\item[KNeighbors] 'algorithm': 'auto', 'leaf_size': 10, 
-		'n_neighbors': 20, 'p': 5, 'weights': 'uniform'
-		\item[XGBoost] 'learning_rate':0.08,'n_estimators':50,
-		'max_depth':5,
-		
-		'gamma':0,'subsample':0.9,'colsample_bytree':0.5
-		\item[Netual Network] 'activation': 'relu', 'hidden_layer_sizes': 9, 
-		'learning_rate': 'adaptive', 'solver': 'adam'
+		\item[RandomForest] 'n_jobs': '-1', 'max_depth': 15, 
+		'random_state': 42, 'n_estimators': 25
+		\item[XGBoost] 'max_depth':10, 
+		'subsample':1,
+		'min_child_weight':0.5,
+		'eta':0.3, 
+		'num_round':1000, 
+		'seed':1,
+		'silent':0,
+		'eval_metric':'rmse'
+		\item[LSTM] "batch_size":128,
+		"verbose":2,
+		"epochs":10
 	\end{description}
-	
-	\item Best Score in Ten-Fold Cross-Validation
-	
-	From the  ~\Cref{tbl:best_score_base_models_old},
-	it shows that the accuracy of 
-	each model is not much different,
-	except XGBoost.
-	
-	\begin{table}[h]  \centering
-		\caption{Best Score of the Base Models}
-		\label{tbl:best_score_base_models_old}
-		\begin{tabular}{ccccccc}
-			%\bottomrule
-			\toprule
-			& RF  & LR & SVC & KNN & XGBoost & Netual Network\\
-			\midrule
-			Best Score & 0.7224  & 0.7547 & 0.7493 & 0.7251 & 0.9314 & 0.7466\\
-			\bottomrule
-		\end{tabular}
-	\end{table}
-\end{itemize}
 
-\subsubsection{New Train Data}
-\
-
-The following are the base models 
-with the best parameters 
-provided by Grid Search.
-
-\begin{itemize}
-	\item Best Parameters of Models
-	\begin{description}
-		\item[RandomForest] 'criterion': 'entropy', 'max_depth': 5, 
-		'max_features': 'auto', 'n_estimators': 100 
-		\item[LogisticRegression] 'C': 10, 'penalty': 'l2'
-		\item[SVC] 'C': 5, 'degree': 3, 'kernel': 'rbf'
-		\item[KNeighbors] 'algorithm': 'auto', 'leaf_size': 10, 
-		'n_neighbors': 10, 'p': 2, 'weights': 'uniform' 
-		\item[XGBoost] 'learning_rate':0.07,'n_estimators':50,
-		'max_depth':6,
-		
-		'gamma':0,'subsample':0.9,'colsample_bytree':0.5
-		\item[Netual Network] 'activation': 'identity', 
-		'hidden_layer_sizes': 8, 'learning_rate': 'adaptive', 'solver': 'adam'
-	\end{description}
-	
-	\item Best Score in Ten-Fold Cross-Validation
-	
-	Compare with the  ~\Cref{tbl:best_score_base_models_old}
-	above,
-	you can find that the accuracy of the models increases,
-	although it's not obvious.
-	
-	\begin{table}[h]  \centering
-		\caption{Best Score of the Base Models}
-		\label{tbl:best_score_base_models_new}
-		\begin{tabular}{ccccccc}
-			\toprule
-			% after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
-			& RF & LR & SVC & KNeighbors & XGBoost & Netual Network\\
-			\midrule
-			Best Score & 0.7224 & 0.7547 & 0.7493 & 0.7251 & 0.9326 & 0.7466\\
-			\bottomrule
-		\end{tabular}
-	\end{table}
-\end{itemize}
 
 \subsection{Forecast Result of Base Models}
 \
 
-From the table below
-shows the result of base models
-on test data.
-Some models have improved accuracy, 
-but some models have reduced accuracy.
+From the  ~\Cref{tbl:best_score_base_models_old},
+it shows that the rmse of 
+each model, the random forest 
+performs poorly, and the LSTM 
+performs best, but the gap between 
+XGboost and LSTM is not large.
 
-\begin{table}[h]\centering
-	\caption{Forecast Result of Base Models}
-	\begin{tabular}{ccccccccc}
+\begin{table}[h]  \centering
+	\caption{Best Score of the Base Models}
+	\label{tbl:best_score_base_models_old}
+	\begin{tabular}{ccccccc}
+		%\bottomrule
 		\toprule
-		& Acc_old & Acc_new & Prec_old & Prec_new & Rec_old & Rec_new & F1_old & F1_new\\
+		& RandomForest & XGBoost & LSTM\\
 		\midrule
-		RF & 0.81 &      0.83 & 0.84 & 0.84 & 0.81 & 0.83 & 0.82 & 0.83\\
-		LR & 0.76 &      0.75 & 0.76 & 0.75 & 0.76 & 0.75 & 0.76 & 0.75\\
-		SVC & 0.75 &     0.69 & 0.77 & 0.71 & 0.75 & 0.69 & 0.75 & 0.70\\
-		KNN & 0.73 &     0.71 & 0.77 & 0.73 & 0.73 & 0.71 & 0.74 & 0.71\\
-		XGBoost & 0.92 & 0.95 & 0.92 & 0.95 & 0.92 & 0.95 & 0.92 & 0.95\\
-		NN & 0.73 &      0.68 & 0.75 & 0.71 & 0.73 & 0.68 & 0.74 & 0.69\\
-		mean $\pm$ var & .78$\pm$.005 & .77$\pm$.009 &
-		.80$\pm$.004 & .78$\pm$.008 &
-		.78$\pm$.005 & .77$\pm$.009 &
-		.79$\pm$.004 & .77$\pm$.009\\	
+		Best Score - rmse & 1.21174 & 1.03583 & 1.0200\\
 		\bottomrule
 	\end{tabular}
 \end{table}
-
-\subsection{Forecast Result of Ensemble Model }
-\
-
-Ensemble model means using 
-more than 1 model to finish the prediction.
-Here just averaging the prediction results 
-by using voting. 
-
-\subsubsection{Original Train Data}
-\
-
-The table below is the metrics classification report 
-of ensemble model in original train data.
-
-\begin{table}[h]  \centering
-	\caption{Metrics Classification Report of Ensemble Model}
-	\label{tbl:metrics_classification_ensemble_old}
-	\begin{tabular}{ccccc}
-		\hline
-		& precision  &  recall & f1-score &  support\\
-		\hline
-		Ghost   &    0.80   &   0.83  & 0.82 & 24\\
-		Ghoul  &  0.88  &  0.79  &   0.84   &   29\\
-		Goblin  &   0.67  &  0.73 &  0.70  &   22\\
-		\hline
-		micro avg  &  0.79  &  0.79  & 0.79    &  75\\
-		macro avg  &  0.78  & 0.78  &  0.78  &  75\\
-		weighted avg  &   0.79  &  0.79 &  0.79  &  75\\
-		\hline 
-		%\bottomrule
-	\end{tabular}
-\end{table}
-
-\subsubsection{New Train Data}
-\
-
-The table below is the metrics classification report 
-of ensemble model in new train data.
-\begin{table}[h]  \centering
-	\caption{Metrics Classification Report of Ensemble Model}
-	\label{tbl:metrics_classification_ensemble_new}
-	\begin{tabular}{ccccc}
-		\hline
-		&precision & recall & f1-score & support\\
-		\hline
-		Ghost  &  0.84  &  0.88  & 0.86 &  24\\
-		Ghoul  &  0.93  & 0.97 &  0.95 &   29\\
-		Goblin  &  0.80 &  0.73  & 0.76  &  22\\
-		\hline
-		micro avg & 0.87  & 0.87  & 0.87  & 75\\
-		macro avg &  0.86  &  0.86 & 0.86 &   75\\
-		weighted avg  &  0.86 & 0.87  &  0.86  &  75\\
-		\hline 
-		%\bottomrule
-	\end{tabular}
-\end{table}	
+\end{itemize}
 
 
 \section{Conclusion}
@@ -727,30 +407,28 @@ of ensemble model in new train data.
 \begin{itemize}
 	\item Exploratory data analysis is 
 	very important for the competition,
-	that is an exploratory analysis 
-	of the data to 
-	provide the necessary conclusions 
-	for data processing and modeling. 
+	Discover the imperfections of the 
+	data and have a certain understanding 
+	of the overall appearance of the data, 
+	which will help later modeling and analysis. 
 	\item The data that we have,
 	needed processed in many cases.
 	Data preprocessing includes 
-	deal with missing data and outliers,
-	change categorical variable 
-	into one-hot code and so on.
+	deal with missing data and outliers, 
+	We must think carefully about the outliers, 
+	such as ignoring them.
 	\item The most important thing is
 	feature engineering.
-	We can create as more as poosible features,
-	then select the most useful features.
-	\item Model training is also very important.
-	There are many algorithms, 
-	in my opinoin, 
-	if the time permits,
-	we can We can try all the algorithms. 
-	\item The last thing is adjustment,
-	for example,
-	the models have many parameters,
-	can use Grid Search to find 
-	the optimal paratemers.	
+	We have to think carefully and 
+	deal with outliers, such as ignoring 
+	or deleting them.
+	\item There is no best model, 
+	only the best model. We should 
+	try as many models as possible to 
+	get the best prediction results. 
+	\item Feature engineering is very 
+	important and even plays a decisive 
+	role in this competition.	
 \end{itemize}
 
 %\lstset{language=python}         
