@@ -266,6 +266,8 @@ as the base models of ensemble model,show the most important parameters.
 	\item RandomForest 
 	\item XGBoost
 	\item LSTM
+	\item Linear regression
+	\item KNN
 \end{itemize}
 \subsection{Base Models}
 \
@@ -323,9 +325,12 @@ this is a functional optimization, multi-target.
 \subsubsection{LSTM}
 \
 
-Long short-term memory (LSTM) is an artificial recurrent neural network (RNN) 
-architecture used in the field of deep learning. LSTM has feedback connections. 
-It can not only process single data points (such as images), but also entire 
+Long short-term memory (LSTM) is an artificial 
+recurrent neural network (RNN) 
+architecture used in the field of 
+deep learning. LSTM has feedback connections. 
+It can not only process single data 
+points (such as images), but also entire 
 sequences of data (such as speech or video). 
 	
 	
@@ -337,7 +342,51 @@ sequences of data (such as speech or video).
 	\item[use_bias] Boolean, whether to use bias term
 \end{description}
 
+\subsubsection{Linear regression}
+\
 
+Linear regression is a linear approach to 
+modeling the relationship between a scalar 
+response (or dependent variable) and one 
+or more explanatory variables (or 
+independent variables). 
+
+
+\begin{description}
+	\item[fit_intercept] whether to calculate the intercept for this model. If 
+	set to False, no intercept will be used in calculations 
+	the number of neurons in the i-th hidden layer
+	\item[normalize] This parameter is ignored when fit_intercept is set to 
+	False
+	\item[copy_X] If True, X will be copied; else, it may be overwritten
+	\item[n_jobs] The number of jobs to use for the computation
+\end{description}
+
+\subsubsection{KNN}
+\
+
+k-NN is a type of instance-based learning, 
+or lazy learning, where the function is 
+only approximated locally and all 
+computation is deferred until classification. 
+
+
+\begin{description}
+	\item[n_neighbors] Number of neighbors to use by default for kneighbors 
+	queries
+	\item[weights] weight function used in prediction. Possible values
+	\item[algorithm] Algorithm used to compute the nearest neighbors
+	\item[leaf_size] Leaf size passed to BallTree or KDTree
+\end{description}
+
+\subsection{Ensemble Model}
+\
+
+To combine the base models as 1st level 
+model predictions, I'll use a simple 
+linear regression. As I'm only feeding 
+the model with predictions 
+I don't need a complex model.
 
 \section{Experiment and Analysis}
 
@@ -347,9 +396,9 @@ and found some outliers.
 Because the number of outliers is very small, 
 after ignoring the outliers, the features 
 are selected for experiments based on their importance.
-Due to time constraints, I only conducted 
-experiments using the basic model, but 
-did not complete the ensemble model.
+And use the trained models as 
+the base models of ensemble model,
+then do experiment.
 %\WBJianginMarker
 
 \subsection{Base Models Training Result}
@@ -374,6 +423,8 @@ the base models.
 		\item[LSTM] "batch_size":128,
 		"verbose":2,
 		"epochs":10
+		\item[Linear regression] No other parameters required
+		\item[KNN] n_neighbors=9, leaf_size=13, n_jobs=-1
 	\end{description}
 
 
@@ -382,10 +433,9 @@ the base models.
 
 From the  ~\Cref{tbl:best_score_base_models_old},
 it shows that the rmse of 
-each model, the random forest 
-performs poorly, and the LSTM 
-performs best, but the gap between 
-XGboost and LSTM is not large.
+each model, RandomForest and XGBoost 
+perform better, and there is not much 
+difference between the other models.
 
 \begin{table}[h]  \centering
 	\caption{Best Score of the Base Models}
@@ -393,14 +443,21 @@ XGboost and LSTM is not large.
 	\begin{tabular}{ccccccc}
 		%\bottomrule
 		\toprule
-		& RandomForest & XGBoost & LSTM\\
+		& RandomForest & XGBoost & LSTM & Linear regression & KNN\\
 		\midrule
-		Best Score - rmse & 1.21174 & 1.03583 & 1.0200\\
+		Train rmse & 0.8358 & 0.8327 & 0.9276 & 0.8572 & 0.6976\\
+		Validation rmse & 0.8810 & 0.8959 & 0.6611 & 0.8806 & 0.8946\\
 		\bottomrule
 	\end{tabular}
 \end{table}
 \end{itemize}
 
+\subsection{Forecast Result of Ensemble Model }
+\
+
+Ensemble model means using 
+more than 1 model to finish the prediction.
+The train rmse is 0.764973649571408.
 
 \section{Conclusion}
 
@@ -428,7 +485,10 @@ XGboost and LSTM is not large.
 	get the best prediction results. 
 	\item Feature engineering is very 
 	important and even plays a decisive 
-	role in this competition.	
+	role in this competition.
+	\item The Ensemble model may perform better 
+	than a single model when dealing 
+	with some complex problems.	
 \end{itemize}
 
 %\lstset{language=python}         
