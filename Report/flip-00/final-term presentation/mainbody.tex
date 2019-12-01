@@ -17,9 +17,9 @@ next month.
 \subsection{Data List}
 \
 
-There are six data sets with a total of 11 attributes,
+There are 6 data sets with a total of 11 attributes,
 the fllowings are the  
-name and meaning of attributes
+name and meaning of attributes.
 
 
 \begin{description}
@@ -154,22 +154,22 @@ so can be ignored.
 \end{figure}
 
 
-\subsubsection{Scatterplot Plot} 
+\subsubsection{Scatterplot} 
 \
 
-Pairwise plot is 
-a favorite in exploratory analysis 
-to understand the relationship 
-between all possible pairs 
-of numeric variables. 
-This pairplot ~\Cref{fig:scatterplot} 
-shows that data is distributed normally. 
-And while most pairs are widely scattered 
-(in relationship to the type), 
-some of them show clusters: 
-hair\_length and has\_soul, 
-hair\_length and bone\_length. 
-So it may need to reassemble the data.
+This Scatterplot ~\Cref{fig:scatterplot} show 
+that the daily sales volume 
+of the product is mainly concentrated 
+between 0 and 1, and the 
+price of the product can also be concentrated. 
+Use two sets of data to form multiple 
+coordinate points, examine the distribution 
+of coordinate points, and determine 
+whether there is some correlation 
+between the two variables or summarize 
+the distribution pattern of the 
+coordinate points. The scatter 
+plot displays the sequence as a set of points.
 
 \begin{figure}[htbp]
 	\centering
@@ -251,7 +251,7 @@ is a histogram ordered by feature importance.
 	\caption{Feature Importance}\label{fig:feature_importance}
 \end{figure}
 
-We take these features 
+I take these features 
 to form a new train datad.
 
 
@@ -263,11 +263,16 @@ Choose the following algorithms
 as the base models of ensemble model,show the most important parameters.
 
 \begin{itemize}
+    \item Base Models
+	\
+\begin{itemize}
 	\item RandomForest 
 	\item XGBoost
 	\item LSTM
 	\item Linear regression
 	\item KNN
+\end{itemize}
+\item Ensemble Model
 \end{itemize}
 \subsection{Base Models}
 \
@@ -404,7 +409,7 @@ then do experiment.
 \subsection{Base Models Training Result}
 
 The following are the best parameters and 
-the Best Score in training of 
+the best Score in training of 
 the base models. 
 
 \begin{itemize}
