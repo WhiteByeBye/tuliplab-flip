@@ -11,6 +11,7 @@
 \usepackage{amsmath}
 \usepackage{rotating}
 \usepackage{graphicx}
+\usepackage{epstopdf}
 \usepackage{boxedminipage}
 \usepackage{media9}
 \usepackage{rotate}
@@ -36,7 +37,7 @@
   pdftitle={Presentation Title},
   pdfauthor={Gang Li},
   pdfpagemode={FullScreen},
-  pdfborder={0 0 0}
+  pdfborder={0 0 0} 
 }
 
 
@@ -64,21 +65,21 @@
 %%% title
 %%% TODO: Customize to your Own Title, Name, Address
 %%%
-\title{FLIP(00) Mid-term Presentation}
+\title{FLIP(01) Mid-term Presentation}
 \author{Rongxin Xu\\
 Hunan University
 % \href{mailto:gangli@acm.org}{gangli@acm.org}
 % \and % more authors
 }
-\date{26 October 2019}
+\date{19 January 2019}
 
 
 
 % Customize the setting of slides
 \pdsetup{
 % TODO: Customize the left footer, and right footer
-rf={\copyright \emph{FLIP(00)}},
-cf={FLIP(00) Presentation },
+rf={\copyright \emph{FLIP(01)}},
+cf={FLIP(01) Presentation },
 }
 
 
@@ -99,14 +100,14 @@ cf={FLIP(00) Presentation },
 
 \begin{slide}{Problem Description}
   \begin{itemize}
-    \item<1->
-          This is a problem with time-series prediction.
-          There are six data sets with a total of 11 attributes.
-          The following is some requirements.
+    \item
+		The ubiquitousness of smartphones enables 
+		people to announce an emergency they’re 
+		observing in real-time. 
           \begin{itemize}
-            \item<2->
-                  According to the given train data set,
-                  training a model and then using the model to predict total sales for every product and store in the next month.
+            \item
+				Predict whether a real disaster has occurred 
+				based on keywords, location, and Twitter text.
           \end{itemize}
   \end{itemize}
 \end{slide}
@@ -116,163 +117,159 @@ cf={FLIP(00) Presentation },
 \begin{slide}{Attribute Information}
   \begin{itemize}
     \item<1->
-          Attribute Information
+          Attributes Information
     \item[1.]
-          There are six data sets with a total of 11 attributes.
-          \begin{figure}
-            \centering
-            % Requires \usepackage{graphicx}
-            \includegraphics[width=4in,height=3in]{Figures/0.eps}
-            \caption{Attributes name and description}
-            \label{Attributes name and description}
-          \end{figure}
+          There are 3 data sets.
+    \begin{description}
+    	\item[train.csv] the training set.
+    	\item[test.csv] the test set.
+    	\item[sample\_submission.csv] a sample submission file in the correct format.
+    \end{description}
     \item[2.]
-          The detailed description of the data is shown in the following table.
-  \end{itemize}
+          There are 3 data sets with a total of 5 attributes.
+\end{itemize}
+\begin{table}[htbp]
+	\centering
+	\caption{Attribute Information}
+	\begin{tabular}{llllll}
+	\hline
+	% after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
+	Attributes & Information                                                                            \\
+	\hline
+	id   & a unique identifier for each tweet                                                               \\
+	text    & the text of the tweet                                                                         \\
+	location     & the location the tweet was sent from (may be blank)                                      \\
+	keyword     & a particular keyword from the tweet (may be blank)                                        \\
+	target    &  in train.csv only, this denotes whether a tweet is about a real disaster (1) or not (0)    \\                                               \\
+	\hline
+	%\bottomrule
+\end{tabular}
+\end{table}
 \end{slide}
 
-\begin{slide}{Detailed description}
-  \begin{figure}[htbp]
-    \centering
-    \subfigure[sales_train.csv]{
-      \includegraphics[width=7cm]{Figures/1.eps}
-      %\caption{fig1}
-    }
-    \quad
-    \subfigure[item_categories.csv]{
-      \includegraphics[width=5cm]{Figures/2.eps}
-    }
-    \quad
-    \subfigure[test.csv]{
-      \includegraphics[width=3cm]{Figures/5.eps}
-    }
-    \quad
-    \subfigure[items.csv]{
-      \includegraphics[width=7cm]{Figures/3.eps}
-    }
-    \quad
-    \subfigure[shops.csv]{
-      \includegraphics[width=4cm]{Figures/4.eps}
-    }
-    \caption{Data Description}
-  \end{figure}
-\end{slide}
-
-\begin{slide}{Summary}
-  \begin{itemize}
-    \item
-          The data is very clean and complete,
-          so we only need to change the data type after importing.
-    \item
-          We also need to reorganize the table structure to make it more readable.
-          An sample is given below.
-          \begin{figure}
-            \centering
-            % Requires \usepackage{graphicx}
-            \includegraphics[width=4in,height=3in]{Figures/13.eps}
-            \caption{sample}
-            \label{sample}
-          \end{figure}
-  \end{itemize}
-\end{slide}
 
 \section{Exploratory Data Analysis}
 
-\begin{slide}{Exploratory Data Analysis}
+\begin{slide}{Scatter plot of keywords}
   \begin{figure}[htbp]
     \centering
-    \subfigure[Items per Category]{
-      \includegraphics[width=7cm]{Figures/6.eps}
-      %\caption{fig1}
-    }
-    \quad
-    \subfigure[Total Sales of the company]{
-      \includegraphics[width=9cm]{Figures/7.eps}
-    }
-    \quad
-    \subfigure[Rolling Mean and std]{
-      \centering
-      \includegraphics[width=12cm]{Figures/8.eps}
-    }
-    \caption{EDA}
+      \includegraphics[width=.7\linewidth,height=.5\linewidth]{Figures/scatter_keywords.eps}
+    \caption{Scatter plot of keywords}
+  \end{figure}
+\end{slide}
+
+\begin{slide}{Scatter plot of location}
+  \begin{figure}[htbp]
+	\centering
+	\includegraphics[width=.7\linewidth,height=.5\linewidth]{Figures/scatter_location.eps}
+	\caption{Scatter plot of location}
+  \end{figure}
+\end{slide}
+
+
+\begin{slide}{Missing Values}
+  \begin{figure}
+    \centering
+    % Requires \usepackage{graphicx}
+    \includegraphics[width=.9\linewidth,height=.3\linewidth]{Figures/hits.eps}
+    \caption{Missing Values of location and keywords}
   \end{figure}
 \end{slide}
 
 \begin{slide}{Summary}
   \begin{itemize}
+	\item<1->
+	Both training and test set have same ratio of missing values in keyword and location.
+	\item[1.]
+	0.8\% of keyword is missing in both training and test set.
+	\item[2.]
+	33\% of location is missing in both training and test set.
+	~\\
+	~\\
+	\item<1->
+	From Data description and above analysis we can conclude :
+	\item[1.]
+	Locations are not automatically generated, they are user inputs and that's why data is not clean and there are too many incoorect and missing values.We can skip the 'location' column from our feature list.
+	\item[2.]
+	We can consider the 'keyword' column as a feature because there are a lot of unique keywords and missing values are very insignificant (< 1 percentage).
+\end{itemize}
+\end{slide}
+
+\section{Data Preprocessing}
+\begin{slide}{Basic NLP Techniques}
+	Create a Corpus from 'Text' coloumn, Corpus is a simplified version of our text data that contain clean data. To create Corpus should have to perform the following actions
+	\begin{description}
+	\item[Remove unwanted words] Removal of unwanted words such as special characters and numbers to get only pure text.
+	\item[Transform words to lowercase] Transform words to lowercase because upper and lower case have diffirent ASCII codes.
+	\item[Remove stopwords] Stop words are usually the most common words in a language and they will be irrelevant in determining the nature.
+	\item[Stemming words] Stemming is the process of reducing words to their word stem, base or root form.
+	\end{description}
+\end{slide}
+
+\section{Modeling and Model Evaluation}
+\begin{slide}{Evaluation}
+	Use F1 score.
+  \begin{itemize}
     \item
-          There is an obvious "seasonality" (Eg: peak sales around a time of year)
-          and a decreasing "Trend".
+          F1 is calculated as follows: \\[10 pt]
+		$F _ { 1 } = 2 * \frac { \text { precision } * \text { recall } } { \text { precision } + \text {recall} }$
+\\[10 pt]
+    \item
+		where: \\[10 pt]
+		$\begin{aligned} \text {precision} & = \frac { T P } { T P + F P } \\ \text {recall} & = \frac { T P } { T P + F N } \end{aligned}$
   \end{itemize}
 \end{slide}
 
-\section{Stationarity}
-
-\begin{slide}{Seasonality and Trend}
-  \begin{figure}
-    \centering
-    % Requires \usepackage{graphicx}
-    \includegraphics[width=5in]{Figures/9.eps}
-    \caption{Seasonality and Trend}
-    \label{Seasonality and Trend}
-  \end{figure}
+\begin{slide}{Modeling}
+	Since this NLP problem is also a binary classification problem, we might as well try some traditional classification models, such as:
+		\begin{description}
+	\item[Gaussian Naive Bayes]
+	\item[Gradient Boosting]
+	\item[K - Nearest Neighbor]
+	\item[Decision Tree]
+	\item[Logistic Regression]
+	\item[XGBOOST]
+	\item[Voting Classifier]
+\end{description}
 \end{slide}
 
-\begin{slide}{Stationarity Test}
-  \begin{figure}
-    \centering
-    % Requires \usepackage{graphicx}
-    \includegraphics[width=4in]{Figures/10.eps}
-    \caption{Stationarity Test}
-    \label{Stationarity Test}
-  \end{figure}
+\begin{slide}{Model Evaluation}
+	Use F1 score and accuracy to evaluate model performance.
+% Table generated by Excel2LaTeX from sheet 'Sheet1'
+\begin{table}[htbp]
+	\centering
+	\caption{Model Evaluation}
+	\begin{tabular}{llll}
+		\toprule
+		\multicolumn{1}{c}{model} & \multicolumn{2}{c}{Accuracy Score} & \multicolumn{1}{c}{F1 Score} \\
+		& \multicolumn{1}{c}{Train Data Set} & \multicolumn{1}{c}{Test Data Set} &  \\
+		\midrule
+		\textbf{Gaussian Naive Bayes} & 0.783314021 & 0.75843812 & 0.653371 \\
+		\textbf{Gradient Boosting} & 0.853666611 & 0.75446724 & 0.647673 \\
+		\textbf{K - Nearest Neighbors} & 0.975004138 & 0.726009265 & 0.56051 \\
+		\textbf{Decision Tree} & 0.975004138 & 0.729318332 & 0.663374 \\
+		\textbf{Logistic Regression} & 0.840258235 & 0.80344143 & 0.752706 \\
+		\textbf{XGBOOST} & 0.840258235 & 0.80344143 & 0.752706 \\
+		\textbf{Voting Classifier} & 0.898857805 & 0.782925215 & 0.752706 \\
+	\end{tabular}%
+\end{table}%
 \end{slide}
 
-\begin{slide}{Remove seasonality and trends}
-  \begin{figure}
-    \centering
-    % Requires \usepackage{graphicx}
-    \includegraphics[width=6in,height=4in]{Figures/11.eps}
-    \caption{Remove seasonality and trends}
-    \label{Remove seasonality and trends}
-  \end{figure}
-\end{slide}
 
-\begin{slide}{Summary}
+\section{Conclusion and Future research}
+\begin{slide}{Conclusion}
   \begin{itemize}
-    \item
-          Now let's check the new P-value.
-          \begin{figure}
-            \centering
-            % Requires \usepackage{graphicx}
-            \includegraphics[width=3in,height=2in]{Figures/12.eps}
-            \caption{new stationarity test}
-            \label{new stationarity test}
-          \end{figure}
-    \item
-          After the transformations, our p-value for the DF test is well within 0.05.
-          Hence we can assume Stationarity of the series.
-  \end{itemize}
-\end{slide}
-
-\section{Conclusion}
-\begin{slide}{Summary}
-  \begin{itemize}
-    \item From the above result presentation, we can find that
-          \subitem There are seasonality and trend in data.
+    \item 	Locations are not automatically generated, they are user inputs and that's why data is not clean and there are too many incoorect and missing values.We can skip the 'location' column from our feature list.
           \bigskip
-    \item From the Stationarity test, we can find that
-          \subitem After removing seasonality and trends, the time series becomes smooth.
-          \smallskip
-          \subitem So we can use traditional time series prediction methods for prediction.
+    \item In traditional classification models, the logistic regression model, XGBOOST, and Voting Classifier have higher F1 scores, which means that the performance is better than other models.
   \end{itemize}
 \end{slide}
 
 \begin{slide}{Future research}
   \begin{itemize}
-    \item Predict by traditional time series prediction models such as AR, MA and ARMA.
-    \item Using more models to predict, such as random forests and neural networks.
-    \item Find the most effective model and get my own kaggle ranking.
+    \item Embeddings \& Text Cleaning.
+    \item Design meta features and extract features using N-gram.
+    \item Use word2vec, glove, BERT, etc. to construct word vectors and compare their performance.
   \end{itemize}
 \end{slide}
 
