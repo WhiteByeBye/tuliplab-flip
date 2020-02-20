@@ -1,0 +1,26 @@
+@echo off
+setlocal enabledelayedexpansion
+echo 请将需要处理的jpg文件放在本脚本目录下
+echo 所有输出均位于当前文件夹
+echo;
+pause
+echo 开始转换...
+echo;
+
+if not exist log\ md log\
+if exist log\list.txt del log\list.txt
+
+dir /a/b *.png > log\list.txt
+
+set /a count = 0
+for /f "delims=." %%i in (log\list.txt) do (
+    if exist %%i.png (
+        bmeps -c %%i.png %%i.eps
+        set /a count += 1
+    )
+)
+
+echo 转换完毕, 共处理%count%个文件
+echo; 
+rd /s/q log
+pause
