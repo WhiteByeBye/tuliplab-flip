@@ -4,52 +4,56 @@
 
 \subsection{Problem Statement}
 \
-This is a problem with time-series prediction.
-After a month of making scientific observations 
-and taking careful measurements, 
-can predict total sales for every product and store in the next month.
-The raw dataset contains train set with 2935849 
-samples and 214200 unlabeled samples as test set.
-Through the train data, predict total sales for every product and store in the 
-next month.
-
+This is a problem with natural language processing.
+The ubiquitousness of smartphones enables 
+people to announce an emergency they’re 
+observing in real-time. So the target is
+Predict whether a real disaster has occurred 
+based on keywords, location, and twitter text.
 
 \subsection{Data List}
 \
 
-There are 6 data sets with a total of 11 attributes,
+There are 3 data sets with a total of 5 attributes,
 the fllowings are the  
 name and meaning of attributes.
 
 
 \begin{description}
-	\item[id]  an Id that represents a (Shop, Item) tuple within the test set.
-	\item[shop\_id] unique identifier of a shop.
-	\item[item\_id] unique identifier of a product.
-	\item[item\_category\_id] unique identifier of item category.
-	\item[item\_cnt\_day] percentage of soul in the creature.
-	\item[item\_price] current price of an item.
-	\item[date] date in format dd/mm/yyyy.
-	\item[date\_block\_num] unique identifier of item category.
-	\item[item\_name] name of item.
-	\item[shop\_name] name of shop.
-	\item[item\_category\_name] name of item category.
+	\item[train.csv] the training set.
+	\item[test.csv] the test set.
+	\item[sample\_submission.csv] a sample submission file in the correct format.
 \end{description}
 
+\begin{table}[htbp]
+	\centering
+	\caption{Attribute Information}
+	\begin{tabular}{llllll}
+		\hline
+		% after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
+		Attributes & Information                                                                            \\
+		\hline
+		id   & a unique identifier for each tweet                                                               \\
+		text    & the text of the tweet                                                                         \\
+		location     & the location the tweet was sent from (may be blank)                                      \\
+		keyword     & a particular keyword from the tweet (may be blank)                                        \\
+		target    &  in train.csv only, this denotes whether a tweet is about a real disaster (1) or not (0)    \\                                               \\
+		\hline
+		%\bottomrule
+	\end{tabular}
+\end{table}
 
 \subsection{Problem Analysis}
 
 \subsubsection{Problem Possible Solutions}
 \
 
-There are many machine learning algorithms 
-can solve the Time series prediction problem,
-such as xgboost,
-random forest and so on.
-Use CV to find the best parameters of the algorithms 
-and then validate with testing data.
-But the most important thing is 
-do  feature engineering to improve accuracy. 
+There are many machine learning models and algorithms 
+that can solve NLP problems, such as Word2vec, 
+FastText, BERT, etc. Word embedding and text cleaning 
+through pre-trained models may greatly improve 
+prediction accuracy. Then use BERT to 
+get the final prediction result. 
 
 
 \subsubsection{Evaluation Methods}
@@ -57,12 +61,18 @@ do  feature engineering to improve accuracy.
 
 Before experiment, determine the evaluation methods
 to assess the model performance is very important,
-usually it has the following methods
-for classification problem:
+Submissions are evaluated using F1 
+between the predicted and expected answers.
 
 \begin{itemize}
-	\item RMSE
-\end{itemize} 
+	\item
+	F1 is calculated as follows: \\[5 pt]
+	$F _ { 1 } = 2 * \frac { \text { precision } * \text { recall } } { \text { precision } + \text {recall} }$
+	\\[5 pt]
+	\item
+	where: \\[5 pt]
+	$\begin{aligned} \text {precision} & = \frac { T P } { T P + F P } \\ \text {recall} & = \frac { T P } { T P + F N } \end{aligned}$
+\end{itemize}
 
 
 \section{Exploratory Data Analysis} \label{sec-data_exploration}
