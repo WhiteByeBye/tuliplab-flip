@@ -15,7 +15,7 @@ based on keywords, location, and twitter text.
 \
 
 There are 3 data sets with a total of 5 attributes,
-the fllowings are the  
+the fllowings ~\cref{tbl:Attribute Information} are the  
 name and meaning of attributes.
 
 
@@ -26,6 +26,7 @@ name and meaning of attributes.
 \end{description}
 
 \begin{table}[htbp]
+	\label{tbl:Attribute Information}
 	\centering
 	\caption{Attribute Information}
 	\begin{tabular}{llllll}
@@ -77,242 +78,224 @@ between the predicted and expected answers.
 
 \section{Exploratory Data Analysis} \label{sec-data_exploration}
 
-\subsection{Data Information}
+\subsection{Keyword and Location}
 \
 
-The following  ~\cref{tbl:data information}
-is the statistical result of each attribute in sales\_train.csv.
-There are 6 numerical variables,
-and no missing values.
-The data is very clean and complete, So let's start visual analysis.
-
-
-
-\begin{table}[htbp]  \centering
-	\caption{Data Information}
-	\label{tbl:data information}
-	\begin{tabular}{ccccccc}
-		\hline
-		% after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
-		& date\_block\_num & shop\_id & item\_id & item\_price & item\_cnt\_day 
-		& item\_category\_id\\
-		\hline
-		count & 2935849 & 2935849 & 2935849 & 2935849 & 2935849 & 2935849 \\
-		mean & 14.57 & 33 & 10197.23 & 890.62 & 1.24 & 40 \\
-		std & 9.42 & 16.23 & 6324.3 & 1726.44 & 2.62 & 17.1 \\
-		min & 0 & 0 & 0 & -1 & -22 & 0 \\
-		25\%  & 7 & 22 & 4476 & 249 & 1 & 28 \\
-		50\%  & 14 & 31 & 9343 & 399 & 1 & 40\\
-		75\% & 23 & 47 & 15684 & 999 & 1 & 55\\
-		max & 33 & 59 & 22169 & 307980 & 2169 & 83\\
-		\hline 
-		%\bottomrule
-	\end{tabular}
-\end{table}
-
-\subsection{Data Visualization}
-\
-
-Use EDA to plot the distribution of the data,
-can observate the data intuitively and
-find the relation between the attribute values. 
-For example boxplot can visually observe 
-the distribution of numerical variables, 
-scatterplot can show their distribution trends 
-and whether exists outliers.
-For classification problems, 
-the data with the same label is drawn in same color, 
-which is very helpful for 
-the construction of the Feature.
-
-
-\subsubsection{ Histogram}
-\
-
-The figure ~\Cref{fig:his_1} 
-shows the distribution of the various attributes. It seems that item\_id and 
-shop\_id has a huge impact on sales and sales tend to decline with the date.
-
-
-\begin{figure}[htbp]
-	\centering
-	
-	%\graphicspath{{figures/}{mine/}}
-	\includegraphics[scale=0.3]{figures/his_1.eps}
-	\caption{Distribution of individual variables}\label{fig:his_1}
-\end{figure}
-
-
-\subsubsection{Boxplot}
-\
- 
-When analyzing the data, 
-the boxplot can effectively 
-help us identify the characteristics of the data:
-visually identify outliers in the dataset or
-determine the data dispersion and 
-bias of the data set. 
-Through the figure ~\Cref{fig:boxplot}, 
-we know that the outliers are very small,
-so can be ignored.
-
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.3]{figures/boxplot.eps}
-	\caption{Boxplot of item_cnt_day and item_price}\label{fig:boxplot}
-\end{figure}
-
-
-\subsubsection{Scatterplot} 
-\
-
-This Scatterplot ~\Cref{fig:scatterplot} show 
-that the daily sales volume 
-of the product is mainly concentrated 
-between 0 and 1, and the 
-price of the product can also be concentrated. 
-Use two sets of data to form multiple 
-coordinate points, examine the distribution 
-of coordinate points, and determine 
-whether there is some correlation 
-between the two variables or summarize 
-the distribution pattern of the 
-coordinate points. The scatter 
-plot displays the sequence as a set of points.
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.4]{figures/scatterplot.eps}
-	\caption{Scatterplot of item_cnt_day and item_price}\label{fig:scatterplot}
-\end{figure}
-
-\subsubsection{Correllogram}
-\
-
-Correlogram is used to 
-visually see the correlation metric 
-between all possible pairs of numeric variables 
-in a given dataframe. 
-This figure ~\Cref{fig:corr} 
-make it convenient for us to analyze features.
-You can see that the item_cnt_day related 
-to the target to be analyzed is item_id and item_price.
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.1]{figures/corr.eps}
-	\caption{Correllogram}\label{fig:corr}
-\end{figure}
-
-
-\subsection{Data Preparation}
-
-
-
-\subsubsection{Feature Selection}
-\
-
-Use the algorithm below to 
-calculate the importance of features.
-The following figure ~\Cref{fig:feature_importance}
-is a histogram ordered by feature importance. 
-
-\begin{algorithm}[htbp]
-	\small
-	\caption{Features Selection}
-	\label{alg:features_selection}
-	\begin{algorithmic}[1]
-		\REQUIRE
-		Features $X=\{ X_1, X_2, ... , X_n \}$,
-		The number of tree node $M$,
-		$GI_m$ Gini index of node $m$, 
-		$ K $ the number of target,
-		$ p_mk $ proportion of target $k$ in node $m$,
-		$ VIM_{jm}^{\small(Gini)} $ the importance of feature $X_j$ in node $m$ ,
-		$ n$ the tree number of RF.
-		\ENSURE
-		Variable Importance Measures $VIM_{j}^{\small(Gini)}$.
-		\STATE
-		Initialize $GI_m$ , 
-		$VIM_{j}^{\small(Gini)} $;
-		\FOR {$m \leftarrow 1...M$}
-		\FOR {$k \leftarrow 1...K$}
-		\STATE Compute the Gini index of node $m$
-		$GI_m = \sum_{k=1}^{|K|} \sum_{k'\neq k} {p_{mk}}{p_{mk'}}=1- \sum_{k=1}^{|K|} p^2_{mk}$
-		\ENDFOR
-		\STATE Divide node m into node r and node l
-		\STATE Compute the importance of feature $X_j$ in node $m$ 
-		$VIM_{jm}^{\small(Gini)} = GI_m-GI_l-GI_r $
-		\ENDFOR
-		\FOR {$i \leftarrow 1...N$}
-		\STATE Compute variable importance measures 
-		$VIM_{j}^{\small(Gini)} = VIM_{j}^{\small(Gini)} + VIM_{ij}^{\small(Gini)}$
-		\ENDFOR
-		\RETURN $VIM_{j}^{\small(Gini)}$
-	\end{algorithmic}
-    %\caption{Feature Selection Algorithm}
-\end{algorithm}
-
-\begin{figure}[htbp]
-	\centering
-	%\graphicspath{{figures/}{mine/}}
-	\includegraphics[scale=0.3]{figures/FEATURE.eps}
-	\caption{Feature Importance}\label{fig:feature_importance}
-\end{figure}
-
-I take these features 
-to form a new train datad.
-
-
-\section{Methods}
-
-There are many machine learning algorithms 
-for Time-series problem. 
-Choose the following algorithms
-as the base models of ensemble model,show the most important parameters.
+\subsubsection{Missing Values}
+Both training and test set have same ratio 
+of missing values in keyword and location.
+the fllowings ~\cref{fig:missing-values-of-keyword-and-location} are the  
+missing values of keyword and location.
 
 \begin{itemize}
-    \item Base Models
-	\
+	\item
+    0.8\% of keyword is missing in both training and test set
+	\item
+	33\% of location is missing in both training and test set
+\end{itemize}
+
+
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[scale=0.3]{"Figures/Missing Values of Keyword and Location.pdf"}
+	\caption{Missing Values of Keyword and Location}
+	\label{fig:missing-values-of-keyword-and-location}
+\end{figure}
+
+Since missing value ratios between training and test set 
+are too close, they are most probably taken from the 
+same sample. Missing values in those features are 
+filled with no\_keyword and no\_location respectively.
+
+\subsubsection{Cardinality and Target Distribution}
+
+Locations are not automatically generated, they are user inputs. 
+That's why `location` is very dirty and there are too many 
+unique values in it. It shouldn't be used as a feature.
+
 \begin{itemize}
-	\item RandomForest 
-	\item XGBoost
-	\item LSTM
-	\item Linear regression
-	\item KNN
+	\item
+	Number of unique values in keyword: 222 (Training) - 222 (Test)
+	\item
+	Number of unique values in location: 3342 (Training) - 1603 (Test)
 \end{itemize}
-\item Ensemble Model
-\end{itemize}
-\subsection{Base Models}
+
+The fllowings ~\cref{fig:Target-Distribution-in-Keywords} shows that 
+there is signal in `keyword` because some of those words can only 
+be used in one context. Keywords have very different tweet counts 
+and target means. `keyword` can be used as a feature by itself or 
+as a word added to the text. Every single keyword in training set 
+exists in test set. If training and test set are from the same 
+sample, it is also possible to use target encoding on `keyword`.
+
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[scale=0.3]{"Figures/Target Distribution in Keywords.pdf"}
+	\caption{Target Distribution in Keywords}
+	\label{fig:Target-Distribution-in-Keywords}
+\end{figure}
+
+\subsection{Meta Features}
 \
 
-The base models have many parameters,
-select the some parameters that 
-have a larger impact on 
-the forecast results,
-the use Grid Search to find 
-the optimal paratemers set.	
-The following is training result. 
-\subsubsection{RandomForest}
-\
-
-Random forest is a classifier with 
-multiple decision trees, and
-the output is determined by 
-the mode of the individual tree output.
-
+Distributions of meta features in classes and datasets 
+can be helpful to identify disaster tweets. It looks 
+like disaster tweets are written in a more formal way 
+with longer words compared to non-disaster tweets 
+because most of them are coming from news agencies. 
+Non-disaster tweets have more typos than disaster tweets 
+because they are coming from individual users. The meta 
+features used for the analysis are;
 
 \begin{description}
-	\item[n_estimators] the number of decision trees
-	\item[criteriom] criterion of choosing 
-	the most appropriate node
-	\item[max_depth] The maximum depth of the tree, 
-	the default is None 
-	\item[max_features] The feature that is divided 
-	when selecting the optimal attribute 
-	cannot exceed this value.
+	\item[word\_count] number of words in text.
+	\item[unique\_word\_count] number of unique words in text.
+	\item[stop\_word\_count] number of stop words in text.
+	\item[url\_count] number of urls in text.
+	\item[mean\_word\_length] average character count in words.
+	\item[char\_count] number of characters in text.
+	\item[punctuation\_count] number of punctuations in text.
+	\item[hashtag\_count] number of hashtags "\#" in text.
+	\item[mention\_count] number of mentions "@" in text.
 \end{description}
+
+The fllowings ~\cref{fig:Meta-feature-target-distribution} shows that 
+all of the meta features have very similar distributions in 
+training and test set which also proves that training and 
+test set are taken from the same sample.
+
+All of the meta features have information about target as 
+well, but some of them are not good enough such as `url\_count`, 
+`hashtag\_count` and `mention\_count`.
+
+On the other hand, `word\_count`, `unique\_word\_count`, 
+`stop\_word\_count`, `mean\_word\_length`, `char\_count`, 
+`punctuation\_count` have very different distributions 
+for disaster and non-disaster tweets. Those features 
+might be useful in models.
+
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[scale=0.1]{"Figures/Meta feature target distribution.pdf"}
+	\caption{Meta feature target distribution}
+	\label{fig:Meta-feature-target-distribution}
+\end{figure}
+
+
+
+\subsection{Target and N-grams}
+\subsubsection{Target}
+\
+
+The fllowings ~\cref{fig:Target-distribution} shows that 
+class distributions are 57\% for 0 (Not Disaster) and 43\% for 1 (Disaster). 
+Classes are almost equally separated so they don't require any 
+stratification by `target` in cross-validation. 
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.3]{figures/Target distribution.pdf}
+	\caption{Target distribution}
+	\label{fig:Target-distribution}
+\end{figure}
+
+\subsubsection{N-grams}
+\paragraph{Unigrams}
+The fllowings ~\cref{fig:Unigrams} shows that:
+\begin{itemize}
+	\item
+	Most common unigrams exist in both classes are mostly punctuations, 
+	stop words or numbers. It is better to clean them before modelling 
+	since they don't give much information about `target`.
+	\item
+	Most common unigrams in disaster tweets are already giving 
+	information about disasters. It is very hard to use some 
+	of those words in other contexts.
+	\item
+	Most common unigrams in non-disaster tweets are verbs. 
+	This makes sense because most of those sentences have informal 
+	active structure since they are coming from individual users.
+\end{itemize}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.3]{figures/Unigrams.pdf}
+	\caption{Unigrams}
+	\label{fig:Unigrams}
+\end{figure}
+
+\paragraph{Bigrams}
+There are no common bigrams exist in both classes  because the context is clearer.
+The fllowings ~\cref{fig:Bigrams} shows that:
+\begin{itemize}
+	\item
+	Most common bigrams in disaster tweets are giving more information about 
+	the disasters than unigrams, but punctuations have to be stripped from words.
+	\item
+	Most common bigrams in non-disaster tweets are mostly about reddit or 
+	youtube, and they contain lots of punctuations. Those punctuations have to be cleaned out of words as well.
+\end{itemize}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.3]{figures/Bigrams.pdf}
+	\caption{Bigrams}
+	\label{fig:Bigrams}
+\end{figure}
+
+\paragraph{Trigrams}
+There are no common trigrams exist in both classes  because the context is clearer.
+The fllowings ~\cref{fig:Bigrams} shows that:
+\begin{itemize}
+	\item
+	Most common trigrams in **disaster** tweets are very similar to bigrams. 
+	They give lots of information about disasters, but they may not provide any 
+	additional information along with bigrams.
+	\item
+	Most common trigrams in **non-disaster** tweets are also very similar to bigrams, and they contain even more punctuations.
+\end{itemize}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.3]{figures/Trigrams.pdf}
+	\caption{Trigrams}
+	\label{fig:Trigrams}
+\end{figure}
+
+
+\section{Embeddings and Text Cleaning}
+\subsubsection{Embeddings Coverage}
+
+When you have pre-trained embeddings, doing standard preprocessing 
+steps  might not be a good idea because some of the valuable 
+information can be lost. It is better to get vocabulary as close 
+to embeddings as possible. In order to do that, train vocab and 
+test vocab are created by counting the words in tweets.
+
+Text cleaning is based on the embeddings below:
+
+\begin{itemize}
+	\item GloVe-300d-840B
+	\item FastText-Crawl-300d-2M 
+\end{itemize}
+
+The fllowings ~\cref{tab:Embeddings-cover} shows that:
+\begin{table}[htbp]
+	\centering
+	\caption{Embeddings cover}
+	\begin{tabular}{lcccc}
+		\toprule
+		& \multicolumn{2}{c}{Training Set} & \multicolumn{2}{c}{Test Set} \\
+		\midrule
+		& vocabulary & text  & vocabulary & text \\
+		\midrule
+		Glove & 52.06\% & 82.68\% & 57.21\% & 81.85\% \\
+		FastText & 51.52\% & 81.84\% & 56.55\% & 81.12\% \\
+		\bottomrule
+	\end{tabular}%
+	\label{tab:Embeddings-cover}%
+\end{table}%
                   
 	
 \subsubsection{XGBoost}
@@ -327,13 +310,13 @@ From a mathematical point of view,
 this is a functional optimization, multi-target.
 
 \begin{description}
-	\item[learning_rate]  control the speed of each update
-	\item[n_estimators] number of iterations
-	\item[max_depth] the depth of tree
+	\item[learning\_rate]  control the speed of each update
+	\item[n\_estimators] number of iterations
+	\item[max\_depth] the depth of tree
 	\item[gamma] penalty factor%惩罚系数
 	\item[subsample] the proportion of data used in 
 		all training sets when training each tree
-	\item[colsample_bytree] the proportion of features used 
+	\item[colsample\_bytree] the proportion of features used 
 		in all trees when training each tree
 	\end{description}
 
@@ -353,8 +336,8 @@ sequences of data (such as speech or video).
 	\item[units] Output dimension 
 		the number of neurons in the i-th hidden layer
 	\item[activation] activation function
-	\item[recurrent_activation] Activation function applied to the loop step
-	\item[use_bias] Boolean, whether to use bias term
+	\item[recurrent\_activation] Activation function applied to the loop step
+	\item[use\_bias] Boolean, whether to use bias term
 \end{description}
 
 \subsubsection{Linear regression}
@@ -368,13 +351,13 @@ independent variables).
 
 
 \begin{description}
-	\item[fit_intercept] whether to calculate the intercept for this model. If 
+	\item[fit\_intercept] whether to calculate the intercept for this model. If 
 	set to False, no intercept will be used in calculations 
 	the number of neurons in the i-th hidden layer
-	\item[normalize] This parameter is ignored when fit_intercept is set to 
+	\item[normalize] This parameter is ignored when fit\_intercept is set to 
 	False
-	\item[copy_X] If True, X will be copied; else, it may be overwritten
-	\item[n_jobs] The number of jobs to use for the computation
+	\item[copy\_X] If True, X will be copied; else, it may be overwritten
+	\item[n\_jobs] The number of jobs to use for the computation
 \end{description}
 
 \subsubsection{KNN}
@@ -387,11 +370,11 @@ computation is deferred until classification.
 
 
 \begin{description}
-	\item[n_neighbors] Number of neighbors to use by default for kneighbors 
+	\item[n\_neighbors] Number of neighbors to use by default for kneighbors 
 	queries
 	\item[weights] weight function used in prediction. Possible values
 	\item[algorithm] Algorithm used to compute the nearest neighbors
-	\item[leaf_size] Leaf size passed to BallTree or KDTree
+	\item[leaf\_size] Leaf size passed to BallTree or KDTree
 \end{description}
 
 \subsection{Ensemble Model}
@@ -425,21 +408,21 @@ the base models.
 \begin{itemize}
 	\item Best Parameters of Models
 	\begin{description}
-		\item[RandomForest] 'n_jobs': '-1', 'max_depth': 15, 
-		'random_state': 42, 'n_estimators': 25
-		\item[XGBoost] 'max_depth':10, 
+		\item[RandomForest] 'n\_jobs': '-1', 'max\_depth': 15, 
+		'random\_state': 42, 'n\_estimators': 25
+		\item[XGBoost] 'max\_depth':10, 
 		'subsample':1,
-		'min_child_weight':0.5,
+		'min\_child\_weight':0.5,
 		'eta':0.3, 
-		'num_round':1000, 
+		'num\_round':1000, 
 		'seed':1,
 		'silent':0,
-		'eval_metric':'rmse'
-		\item[LSTM] "batch_size":128,
+		'eval\_metric':'rmse'
+		\item[LSTM] "batch\_size":128,
 		"verbose":2,
 		"epochs":10
 		\item[Linear regression] No other parameters required
-		\item[KNN] n_neighbors=9, leaf_size=13, n_jobs=-1
+		\item[KNN] n\_neighbors=9, leaf\_size=13, n\_jobs=-1
 	\end{description}
 
 
