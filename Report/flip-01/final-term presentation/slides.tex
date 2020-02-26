@@ -64,21 +64,21 @@
 %%% title
 %%% TODO: Customize to your Own Title, Name, Address
 %%%
-\title{FLIP(00) Final-term Presentation}
+\title{FLIP(01) Final-term Presentation}
 \author{Rongxin Xu\\
 Hunan University
 % \href{mailto:gangli@acm.org}{gangli@acm.org}
 % \and % more authors
 }
-\date{29 November 2019}
+\date{27 February 2020}
 
 
 
 % Customize the setting of slides
 \pdsetup{
 % TODO: Customize the left footer, and right footer
-rf={\copyright \emph{FLIP(00)}},
-cf={FLIP(00) Presentation },
+rf={\copyright \emph{FLIP(01)}},
+cf={FLIP(01) Presentation },
 }
 
 
@@ -101,87 +101,76 @@ cf={FLIP(00) Presentation },
 	\begin{center}
 		\twotonebox{\rotatebox{90}{Defn}}{\parbox{.96\textwidth}
 			{
-				This is a problem with time-series prediction.
-				After a month of making scientific observations
-				and taking careful measurements,
-				can predict total sales for every product and store in the next
-				month.
-				The raw dataset contains  train set with 2935849
-				samples and 214200 unlabeled samples as test set.
-				Through the train data, predict total sales for every
-				product and
-				store in the next month.}}
+This is a problem with natural language processing.
+The ubiquitousness of smartphones enables 
+people to announce an emergency they’re 
+observing in real-time. So the target is
+Predict whether a real disaster has occurred 
+based on keywords, location, and twitter text.}}
 	\end{center}
 \end{slide}
 
 \begin{slide}{Data Set}
 	\begin{center}
 		\twotonebox{\rotatebox{90}{Defn}}{\parbox{.96\textwidth}
-			{There are 6 data sets with a total of 11 attributes,
-				the fllowings are the
-				name and meaning of attributes.
+			{There are 3 data sets with a total of 5 attributes,
+				the fllowings ~\cref{tbl:Attribute Information} are the	name and meaning of attributes.
 			}}
 	\end{center}
-	\begin{center}
-		\begin{itemize}
-			\item Data List
-		\end{itemize}
-		\begin{description}
-			\item[id]  an Id that represents a (Shop, Item) tuple within the
-			      test set.
-			\item[shop\_id] unique identifier of a shop.
-			\item[item\_id] unique identifier of a product.
-			\item[item\_category\_id] unique identifier of item category.
-			\item[item\_cnt\_day] percentage of soul in the creature.
-			\item[item\_price] current price of an item.
-			\item[date] date in format dd/mm/yyyy.
-			\item[date\_block\_num] unique identifier of item category.
-			\item[item\_name] name of item.
-			\item[shop\_name] name of shop.
-			\item[item\_category\_name] name of item category.
-		\end{description}
-	\end{center}
+\begin{description}
+	\item[train.csv] the training set.
+	\item[test.csv] the test set.
+	\item[sample\_submission.csv] a sample submission file in the correct format.
+\end{description}
+
+\begin{table}[htbp]
+	\label{tbl:Attribute Information}
+	\centering
+	\caption{Attribute Information}
+	\begin{tabular}{llllll}
+		\hline
+		% after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
+		Attributes & Information                                                                            \\
+		\hline
+		id   & a unique identifier for each tweet                                                               \\
+		text    & the text of the tweet                                                                         \\
+		location     & the location the tweet was sent from (may be blank)                                      \\
+		keyword     & a particular keyword from the tweet (may be blank)                                        \\
+		target    &  in train.csv only, this denotes whether a tweet is about a real disaster (1) or not (0)    \\                                               \\
+		\hline
+		%\bottomrule
+	\end{tabular}
+\end{table}
 \end{slide}
 
 \section{Exploratory Data Analysis}
 %
-\begin{slide}{Data Information}
-	\begin{center}
-		The following 	is the statistical
-		result of each attribute in sales\_train.csv.
-		There are 6 numerical variables,
-		and no missing values.
-		The data is very clean and complete, So let's start visual
-		analysis.
-	\end{center}
-	\begin{tabular}{ccccccc}
-		\hline
-		% after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
-		        & date\_block\_num & shop\_id & item\_id & item\_price &
-		item\_cnt\_day
-		        &
-		item\_category\_id
-		\\
-		\hline
-		count   & 2935849          & 2935849  & 2935849  & 2935849     &
-		2935849 & 2935849                                                \\
-		mean    & 14.57            & 33       & 10197.23 & 890.62      &
-		1.24    & 40                                                     \\
-		std     & 9.42             & 16.23    & 6324.3   & 1726.44     &
-		2.62    & 17.1                                                   \\
-		min     & 0                & 0        & 0        & -1          &
-		-22     & 0                                                      \\
-		25\%    & 7                & 22       & 4476     & 249         &
-		1       & 28                                                     \\
-		50\%    & 14               & 31       & 9343     & 399         &
-		1       & 40                                                     \\
-		75\%    & 23               & 47       & 15684    & 999         &
-		1       & 55                                                     \\
-		max     & 33               & 59       & 22169    & 307980      &
-		2169    & 83                                                     \\
-		\hline
-		%\bottomrule
-	\end{tabular}
+\begin{slide}{Keyword and Location}
+\subsubsection{Missing Values}
+Both training and test set have same ratio 
+of missing values in keyword and location.
+the fllowings ~\cref{fig:missing-values-of-keyword-and-location} are the  
+missing values of keyword and location.
+
+\begin{itemize}
+	\item
+	0.8\% of keyword is missing in both training and test set
+	\item
+	33\% of location is missing in both training and test set
+\end{itemize}
+
+
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[scale=0.3]{"Figures/Missing Values of Keyword and Location.pdf"}
+	\caption{Missing Values of Keyword and Location}
+	\label{fig:missing-values-of-keyword-and-location}
+\end{figure}
+
+Since missing value ratios between training and test set 
+are too close, they are most probably taken from the 
+same sample. Missing values in those features are 
+filled with no\_keyword and no\_location respectively.
 \end{slide}
 
 \begin{slide}{Data Visualization}
