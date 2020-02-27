@@ -8,8 +8,7 @@
 %%
 %% This is a generated file.
 %%
-%% Copyright (C) 2014 by Pascal Richter, Elena Botoeva, Richard Barnard, and 
-%%Dirk Surmann
+%% Copyright (C) 2014 by Pascal Richter, Elena Botoeva, Richard Barnard, and Dirk Surmann
 %%
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, either
@@ -25,14 +24,11 @@
 
 \documentclass{tikzposter} %Options for format can be included here
 
-\usepackage{showframe}
 \usepackage{todonotes}
-\usepackage[ruled]{algorithm2e}
+
 \usepackage[tikz]{bclogo}
 \usepackage{lipsum}
 \usepackage{amsmath}
-\usepackage{algorithm}
-\usepackage{algorithmic}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage[absolute]{textpos}
@@ -52,223 +48,257 @@
 \usepackage{lipsum}
 \usepackage[english]{babel}
 \usepackage[pangram]{blindtext}
+
 \colorlet{backgroundcolor}{blue!10}
 
-% Title, Author, Institute
-\title{Flip 00 project final report}
+ % Title, Author, Institute
+\title{NLP with Disaster Tweets}
 \author{Rongxin Xu}
-\institute{ Hunan University, China
+\institute{Hunan University, China
 }
+%\titlegraphic{logos/tulip-logo.eps}
 
+%Choose Layout
 \usetheme{Wave}
 
+%\definebackgroundstyle{samplebackgroundstyle}{
+%\draw[inner sep=0pt, line width=0pt, color=red, fill=backgroundcolor!30!black]
+%(bottomleft) rectangle (topright);
+%}
+%
+%\colorlet{backgroundcolor}{blue!10}
 
 \begin{document}
-	
-	
-	\colorlet{blocktitlebgcolor}{blue!23}
-	
-	% Title block with title, author, logo, etc.
-	\maketitle
-	
-	\begin{columns}
-		% FIRST column
-		\column{0.5}% Width set relative to text width
-		
-		
-		\block{Introduction}{
-			This is a problem with time-series prediction.
-			After a month of making scientific observations 
-			and taking careful measurements, 
-			can predict total sales for every product and store in the next 
-			month.
-			The raw dataset contains train set with 2935849 
-			samples and 214200 unlabeled samples as test set.
-			Through the train data, predict total sales for every product and 
-			store in 
-			the next month.
-			\vspace{.5cm}
-			\begin{description}
-				\item[id]  an Id that represents a (Shop, Item) tuple within 
-				the test set.
-				\item[shop\_id] unique identifier of a shop.
-				\item[item\_id] unique identifier of a product.
-				\item[item\_category\_id] unique identifier of item category.
-				\item[item\_cnt\_day] percentage of soul in the creature.
-				\item[item\_price] current price of an item.
-				\item[date] date in format dd/mm/yyyy.
-				\item[date\_block\_num] unique identifier of item category.
-				\item[item\_name] name of item.
-				\item[shop\_name] name of shop.
-				\item[item\_category\_name] name of item category.
-			\end{description}
-			\vspace{.3cm}
-		}
-		
-		\block{Data Visualization}{
-			The Histogram 
-			shows the distribution of the various attributes. It seems that 
-			item\_id and 
-			shop\_id has a huge impact on sales and sales tend to decline with 
-			the date.
-			Through the Boxplot, 
-			we know that the outliers are very small,
-			so can be ignored.
-			\vspace{.5cm}
-			\begin{center}
-				\includegraphics[width=.3\linewidth]{figures/his_1.eps}
-				\quad\includegraphics[width=.3\linewidth]{figures/corr.eps}
-				\quad\includegraphics[width=.3\linewidth,height=.25\linewidth]{figures/boxplot.eps}
-					
-			\end{center}
-			\vspace{.3cm}
-		}
-		
-		\block{Feature Engineering}{
-			
-			\vspace{.5cm}
-			Using the Feature Importance 
-			this function of Random Forest
-			to select the most important features
-			to form a new train data. I take these 
-			features to form a new train datad.
-			\vspace{.5cm}
-			\begin{center}
-				\includegraphics[width=.3\linewidth]{figures/FEATURE.eps}
-			\end{center}
-		}
-		
-		
-		
-		
-		\column{0.5}
-		
-		\block{Algorithm}{
-			To combine the base models as 1st level 
-			model predictions, I'll use a simple 
-			linear regression. As I'm only feeding 
-			the model with predictions 
-			I don't need a complex model.
-			\vspace{.5cm}
-			\begin{itemize}
-				\item Base Models
-				\
-				\begin{itemize}
-					\item RandomForest
-					\item XGBoost
-					\item LSTM
-					\item Linear regression
-					\item KNN
-				\end{itemize}
-				\item Ensemble Model
-				\
-				\begin{itemize}
-					\item Linear regression
-				\end{itemize}
-			\end{itemize}
-			\vspace{.5cm}
-		}
-		
-		
-		\block[titleleft]{Experiment Result}
-		{
-			The tables below shows that the rmse of 
-			each model, RandomForest and XGBoost 
-			perform better, and there is not much 
-			difference between the other models.
-			\vspace{.4cm}
-			\begin{itemize}
-				\item Forecast Result of Base Models
-			\end{itemize}
-			\vspace{.5cm}
-			\begin{center}
-				\begin{tabular}{ccccccc}
-					%\bottomrule
-					\toprule
-					& RandomForest & XGBoost & LSTM & Linear regression & KNN\\
-					\midrule
-					Train rmse & 0.8358 & 0.8327 & 0.9276 & 0.8572 & 0.6976\\
-					Validation rmse & 0.8810 & 0.8959 & 0.6611 & 0.8806 & 
-					0.8946\\
-					\bottomrule
-				\end{tabular}
-			\end{center}
-			\vspace{.5cm}
-			The train rmse of Ensemble model is 0.764973649571408.
-			
-		}
-		
-		\block[titlewidthscale=1, bodywidthscale=1]
-		{Conclusion}
-		{
-			\begin{description}
-				\item Exploratory data analysis is 
-				very important for the competition,
-				Discover the imperfections of the 
-				data and have a certain understanding 
-				of the overall appearance of the data, 
-				which will help later modeling and analysis. 
-				\vspace{.5cm}
-				\item The data that we have,
-				needed processed in many cases.
-				Data preprocessing includes 
-				deal with missing data and outliers, 
-				We must think carefully about the outliers, 
-				such as ignoring them.
-				\vspace{.5cm}
-				\item The most important thing is
-				feature engineering.
-				We have to think carefully and 
-				deal with outliers, such as ignoring 
-				or deleting them.
-				\vspace{.5cm}
-				\item There is no best model, 
-				only the best model. We should 
-				try as many models as possible to 
-				get the best prediction results. 
-				\vspace{.5cm}
-				\item Feature engineering is very 
-				important and even plays a decisive 
-				role in this competition.
-				\vspace{.5cm}
-				\item The Ensemble model may perform better 
-				than a single model when dealing 
-				with some complex problems.	
-				\vspace{.5cm}
-			\end{description}
-		}
-		
-		
-		\colorlet{notebgcolor}{blue!20}
-		\colorlet{notefrcolor}{blue!20}
-		\note[targetoffsetx=8cm, targetoffsety=-12cm, angle=30, rotate=15,
-		radius=2cm, width=.26\textwidth]{
-			Acknowledgement
-			\begin{itemize}
-				\item
-				Thanks!
-			\end{itemize}
-		}
-		
-		
-	\end{columns}
-	
-	\colorlet{notebgcolor}{blue!20}
-	\colorlet{notefrcolor}{blue!20}
-	\note[targetoffsetx=-13cm, 
-	targetoffsety=-20cm,rotate=0,angle=180,radius=8cm,width=.96\textwidth,innersep=.4cm]
-	{
-		\begin{minipage}{0.3\linewidth}
-			\centering
-			\includegraphics[width=24cm]{logos/tulip-wordmark.eps}
-		\end{minipage}
-		\begin{minipage}{0.7\linewidth}
-			{ \centering
-				Flip 00 project final report,
-				29/11/2019, changsha, China
-			}
-		\end{minipage}
-	}
-	
+
+
+\colorlet{blocktitlebgcolor}{blue!23}
+
+ % Title block with title, author, logo, etc.
+\maketitle
+
+\begin{columns}
+ % FIRST column
+\column{0.5}% Width set relative to text width
+
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+ %\block{Main Objectives}{
+%  	      	\begin{enumerate}
+%  	      	\item Formalise research problem by extending \emph{outlying aspects mining}
+%  	      	\item Proposed \emph{GOAM} algorithm is to solve research problem
+%  	      	\item Utilise pruning strategies to reduce time complexity
+%  	      	\end{enumerate}
+%%  	      \end{minipage}
+%}
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+
+
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+\block{Introduction}{
+    This is a problem with natural language processing.
+    The ubiquitousness of smartphones enables 
+    people to announce an emergency they’re 
+    observing in real-time. So the target is
+    Predict whether a real disaster has occurred 
+    based on keywords, location, and twitter text.
+  		
+  	\begin{description}
+  		\item[id] unique identifier for each tweet.
+  		\item[text] the text of the tweet.
+  		\item[location] the location the tweet was sent from (may be blank).
+  		\item[keyword] a particular keyword from the tweet (may be blank).
+  		\item[target] in train.csv only, this denotes whether a tweet is about a real disaster (1) or not (0).
+  	\end{description}
+    There are many machine learning models and algorithms 
+    that can solve NLP problems, such as Word2vec, 
+    FastText, BERT, etc. Word embedding and text cleaning 
+    through pre-trained models may greatly improve 
+    prediction accuracy. Then use BERT to 
+    get the final prediction result. 
+}
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+
+
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+\block{Meta Features}{
+	 The meta features used for the analysis are:
+	\begin{description}
+		\item[word\_count] number of words in text.
+		\item[unique\_word\_count] number of unique words in text.
+		\item[stop\_word\_count] number of stop words in text.
+		\item[url\_count] number of urls in text.
+		\item[mean\_word\_length] average character count in words.
+		\item[char\_count] number of characters in text.
+		\item[punctuation\_count] number of punctuations in text.
+		\item[hashtag\_count] number of hashtags "\#" in text.
+		\item[mention\_count] number of mentions "@" in text.
+	\end{description}
+	\begin{center}
+		\includegraphics[width=.3\linewidth]{Figures/Meta feature target distribution1.pdf}
+		\quad\includegraphics[width=.3\linewidth]{Figures/Meta feature target distribution2.pdf}
+		\quad\includegraphics[width=.3\linewidth]{Figures/Meta feature target distribution3.pdf}
+	\end{center}
+}
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+
+
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+
+%\note{Note with default behavior}
+
+%\note[targetoffsetx=12cm, targetoffsety=-1cm, angle=20, rotate=25]
+%{Note \\ offset and rotated}
+
+ % First column - second block
+
+
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+\block{Exploratory Data Analysis}{
+  	Locations are not automatically generated, they are user inputs.	That's why `location` is very dirty and there are too many unique values in it. It shouldn't be used as a feature.
+  	\begin{center}
+  		\includegraphics[width=.4\linewidth]{Figures/Missing Values of Keyword and Location.pdf}
+  	\end{center}
+  there is signal in `keyword` because some of those words can only
+  be used in one context. Keywords have very different tweet counts and target means. `keyword` can be used as a feature by itself or as a word added to the text.
+  \begin{center}
+  	\includegraphics[height=.4\linewidth]{Figures/Target Distribution in Keywords.pdf}
+  \end{center}
+}
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+
+
+% SECOND column
+\column{0.5}
+ %Second column with first block's top edge aligned with with previous column's top.
+
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+\block{Embeddings and Text Cleaning}{
+When you have pre-trained embeddings, doing standard preprocessing 
+steps  might not be a good idea because some of the valuable 
+information can be lost. It is better to get vocabulary as close 
+to embeddings as possible. In order to do that, train vocab and 
+test vocab are created by counting the words in tweets.
+Text cleaning is based on the embeddings below:
+\begin{itemize}
+	\item GloVe-300d-840B
+	\item FastText-Crawl-300d-2M 
+\end{itemize}
+The most common type of words that require cleaning in `oov` 
+have punctuations at the start or end. Those words doesn't have 
+embeddings because of the trailing punctuations.
+\begin{center}
+	\begin{tabular}{cccc}
+		\toprule
+		\multicolumn{2}{c}{Special characters} & \multicolumn{2}{c}{Contractions} \\
+		\midrule
+		\textbackslash{}x89ÛÏWhen &  When & he's  &  he is \\
+		China\textbackslash{}x89Ûªs &  China's & there's &  there is \\
+		let\textbackslash{}x89Ûªs &  let's & We're &  We are \\
+		fromåÊwounds &  from wounds & That's &  That is \\
+		JapÌ\_n &  Japan & won't &  will not \\
+		Ì©    &  e    & they're &  they are \\
+		SuruÌ¤ &  Suruc & Can't &  Cannot \\
+		å£3million &  3 million & wasn't &  was not \\
+		\cmidrule{1-2}    \multicolumn{2}{c}{Character entity references} & don\textbackslash{}x89Ûªt &  do not \\
+		\cmidrule{1-2}    \&gt  & , >   & aren't &  are not \\
+		\&lt  & , <   & isn't &  is not \\
+		\&amp & , \&  & What's &  What is \\
+		……    & ……    & ……    & …… \\
+		\bottomrule
+	\end{tabular}%
+\end{center}
+}
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+% Second column - first block
+
+
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+\block[titleleft]{Model and Evaluation}
+{
+This model uses the implementation of BERT from the TensorFlow Models 
+repository on GitHub at `tensorflow/models/official/nlp/bert`. It uses 
+L=12 hidden layers (Transformer blocks), a hidden size of H=768, and A=12 attention heads.
+\begin{itemize}
+	\item bert\_en\_uncased\_L-12\_H-768\_A-12/1
+\end{itemize}
+\begin{center}
+	Evaluation\\
+	\includegraphics[width=0.8\linewidth]{"Figures/Evaluation.pdf"}
+\end{center}
+}
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+
+
+% Second column - second block
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+\block[titlewidthscale=1, bodywidthscale=1]
+{Conclusion}
+{
+\begin{itemize}
+	\item Don't use standard preprocessing steps like stemming or 
+	stopword removal when you have pre-trained embeddings.
+	\item Get your vocabulary as close to the embeddings as possible.
+	\item Text cleaning requires patience and meticulousness. 
+	\item BERT does have an advantage over other models when 
+	used properly on NLP problems.
+\end{itemize}
+}
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+
+
+% Bottomblock
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+\colorlet{notebgcolor}{blue!20}
+\colorlet{notefrcolor}{blue!20}
+\note[targetoffsetx=8cm, targetoffsety=-4cm, angle=30, rotate=15,
+radius=2cm, width=.26\textwidth]{
+Acknowledgement
+\begin{itemize}
+    \item
+    International Cooperation Project (Y7Z0511101)
+    of IIE,
+    Chinese Academy of Sciences
+ \end{itemize}
+}
+
+%\note[targetoffsetx=8cm, targetoffsety=-10cm,rotate=0,angle=180,radius=8cm,width=.46\textwidth,innersep=.1cm]{
+%Acknowledgement
+%}
+
+%\block[titlewidthscale=0.9, bodywidthscale=0.9]
+%{Acknowledgement}{
+%}
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+
+\end{columns}
+
+
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+%[titleleft, titleoffsetx=2em, titleoffsety=1em, bodyoffsetx=2em,%
+%roundedcorners=10, linewidth=0mm, titlewidthscale=0.7,%
+%bodywidthscale=0.9, titlecenter]
+
+%\colorlet{noteframecolor}{blue!20}
+\colorlet{notebgcolor}{blue!20}
+\colorlet{notefrcolor}{blue!20}
+\note[targetoffsetx=-13cm, targetoffsety=-12cm,rotate=0,angle=180,radius=8cm,width=.96\textwidth,innersep=.4cm]
+{
+\begin{minipage}{0.3\linewidth}
+\centering
+\includegraphics[width=24cm]{logos/tulip-wordmark.eps}
+\end{minipage}
+\begin{minipage}{0.7\linewidth}
+{ \centering
+ The $11^{th}$ International Conference on Knowledge Science,
+  Engineering and Management (KSEM 2018),
+  17-19/08/2018, Changchun, China
+}
+\end{minipage}
+}
+%%%%%%%%%% -------------------------------------------------------------------- %%%%%%%%%%
+
+
 \end{document}
 
+%\endinput
+%%
+%% End of file `tikzposter-template.tex'.

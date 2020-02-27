@@ -4,52 +4,57 @@
 
 \subsection{Problem Statement}
 \
-This is a problem with time-series prediction.
-After a month of making scientific observations 
-and taking careful measurements, 
-can predict total sales for every product and store in the next month.
-The raw dataset contains train set with 2935849 
-samples and 214200 unlabeled samples as test set.
-Through the train data, predict total sales for every product and store in the 
-next month.
-
+This is a problem with natural language processing.
+The ubiquitousness of smartphones enables 
+people to announce an emergency they’re 
+observing in real-time. So the target is
+Predict whether a real disaster has occurred 
+based on keywords, location, and twitter text.
 
 \subsection{Data List}
 \
 
-There are 6 data sets with a total of 11 attributes,
-the fllowings are the  
+There are 3 data sets with a total of 5 attributes,
+the fllowings ~\cref{tbl:Attribute Information} are the  
 name and meaning of attributes.
 
 
 \begin{description}
-	\item[id]  an Id that represents a (Shop, Item) tuple within the test set.
-	\item[shop\_id] unique identifier of a shop.
-	\item[item\_id] unique identifier of a product.
-	\item[item\_category\_id] unique identifier of item category.
-	\item[item\_cnt\_day] percentage of soul in the creature.
-	\item[item\_price] current price of an item.
-	\item[date] date in format dd/mm/yyyy.
-	\item[date\_block\_num] unique identifier of item category.
-	\item[item\_name] name of item.
-	\item[shop\_name] name of shop.
-	\item[item\_category\_name] name of item category.
+	\item[train.csv] the training set.
+	\item[test.csv] the test set.
+	\item[sample\_submission.csv] a sample submission file in the correct format.
 \end{description}
 
+\begin{table}[htbp]
+	\label{tbl:Attribute Information}
+	\centering
+	\caption{Attribute Information}
+	\begin{tabular}{llllll}
+		\hline
+		% after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
+		Attributes & Information                                                                            \\
+		\hline
+		id   & a unique identifier for each tweet                                                               \\
+		text    & the text of the tweet                                                                         \\
+		location     & the location the tweet was sent from (may be blank)                                      \\
+		keyword     & a particular keyword from the tweet (may be blank)                                        \\
+		target    &  in train.csv only, this denotes whether a tweet is about a real disaster (1) or not (0)    \\                                               \\
+		\hline
+		%\bottomrule
+	\end{tabular}
+\end{table}
 
 \subsection{Problem Analysis}
 
 \subsubsection{Problem Possible Solutions}
 \
 
-There are many machine learning algorithms 
-can solve the Time series prediction problem,
-such as xgboost,
-random forest and so on.
-Use CV to find the best parameters of the algorithms 
-and then validate with testing data.
-But the most important thing is 
-do  feature engineering to improve accuracy. 
+There are many machine learning models and algorithms 
+that can solve NLP problems, such as Word2vec, 
+FastText, BERT, etc. Word embedding and text cleaning 
+through pre-trained models may greatly improve 
+prediction accuracy. Then use BERT to 
+get the final prediction result. 
 
 
 \subsubsection{Evaluation Methods}
@@ -57,443 +62,415 @@ do  feature engineering to improve accuracy.
 
 Before experiment, determine the evaluation methods
 to assess the model performance is very important,
-usually it has the following methods
-for classification problem:
+Submissions are evaluated using F1 
+between the predicted and expected answers.
 
 \begin{itemize}
-	\item RMSE
-\end{itemize} 
+	\item
+	F1 is calculated as follows: \\[5 pt]
+	$F _ { 1 } = 2 * \frac { \text { precision } * \text { recall } } { \text { precision } + \text {recall} }$
+	\\[5 pt]
+	\item
+	where: \\[5 pt]
+	$\begin{aligned} \text {precision} & = \frac { T P } { T P + F P } \\ \text {recall} & = \frac { T P } { T P + F N } \end{aligned}$
+\end{itemize}
 
 
 \section{Exploratory Data Analysis} \label{sec-data_exploration}
 
-\subsection{Data Information}
+\subsection{Keyword and Location}
 \
 
-The following  ~\cref{tbl:data information}
-is the statistical result of each attribute in sales\_train.csv.
-There are 6 numerical variables,
-and no missing values.
-The data is very clean and complete, So let's start visual analysis.
-
-
-
-\begin{table}[htbp]  \centering
-	\caption{Data Information}
-	\label{tbl:data information}
-	\begin{tabular}{ccccccc}
-		\hline
-		% after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
-		& date\_block\_num & shop\_id & item\_id & item\_price & item\_cnt\_day 
-		& item\_category\_id\\
-		\hline
-		count & 2935849 & 2935849 & 2935849 & 2935849 & 2935849 & 2935849 \\
-		mean & 14.57 & 33 & 10197.23 & 890.62 & 1.24 & 40 \\
-		std & 9.42 & 16.23 & 6324.3 & 1726.44 & 2.62 & 17.1 \\
-		min & 0 & 0 & 0 & -1 & -22 & 0 \\
-		25\%  & 7 & 22 & 4476 & 249 & 1 & 28 \\
-		50\%  & 14 & 31 & 9343 & 399 & 1 & 40\\
-		75\% & 23 & 47 & 15684 & 999 & 1 & 55\\
-		max & 33 & 59 & 22169 & 307980 & 2169 & 83\\
-		\hline 
-		%\bottomrule
-	\end{tabular}
-\end{table}
-
-\subsection{Data Visualization}
-\
-
-Use EDA to plot the distribution of the data,
-can observate the data intuitively and
-find the relation between the attribute values. 
-For example boxplot can visually observe 
-the distribution of numerical variables, 
-scatterplot can show their distribution trends 
-and whether exists outliers.
-For classification problems, 
-the data with the same label is drawn in same color, 
-which is very helpful for 
-the construction of the Feature.
-
-
-\subsubsection{ Histogram}
-\
-
-The figure ~\Cref{fig:his_1} 
-shows the distribution of the various attributes. It seems that item\_id and 
-shop\_id has a huge impact on sales and sales tend to decline with the date.
-
-
-\begin{figure}[htbp]
-	\centering
-	
-	%\graphicspath{{figures/}{mine/}}
-	\includegraphics[scale=0.3]{figures/his_1.eps}
-	\caption{Distribution of individual variables}\label{fig:his_1}
-\end{figure}
-
-
-\subsubsection{Boxplot}
-\
- 
-When analyzing the data, 
-the boxplot can effectively 
-help us identify the characteristics of the data:
-visually identify outliers in the dataset or
-determine the data dispersion and 
-bias of the data set. 
-Through the figure ~\Cref{fig:boxplot}, 
-we know that the outliers are very small,
-so can be ignored.
-
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.3]{figures/boxplot.eps}
-	\caption{Boxplot of item_cnt_day and item_price}\label{fig:boxplot}
-\end{figure}
-
-
-\subsubsection{Scatterplot} 
-\
-
-This Scatterplot ~\Cref{fig:scatterplot} show 
-that the daily sales volume 
-of the product is mainly concentrated 
-between 0 and 1, and the 
-price of the product can also be concentrated. 
-Use two sets of data to form multiple 
-coordinate points, examine the distribution 
-of coordinate points, and determine 
-whether there is some correlation 
-between the two variables or summarize 
-the distribution pattern of the 
-coordinate points. The scatter 
-plot displays the sequence as a set of points.
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.4]{figures/scatterplot.eps}
-	\caption{Scatterplot of item_cnt_day and item_price}\label{fig:scatterplot}
-\end{figure}
-
-\subsubsection{Correllogram}
-\
-
-Correlogram is used to 
-visually see the correlation metric 
-between all possible pairs of numeric variables 
-in a given dataframe. 
-This figure ~\Cref{fig:corr} 
-make it convenient for us to analyze features.
-You can see that the item_cnt_day related 
-to the target to be analyzed is item_id and item_price.
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.1]{figures/corr.eps}
-	\caption{Correllogram}\label{fig:corr}
-\end{figure}
-
-
-\subsection{Data Preparation}
-
-
-
-\subsubsection{Feature Selection}
-\
-
-Use the algorithm below to 
-calculate the importance of features.
-The following figure ~\Cref{fig:feature_importance}
-is a histogram ordered by feature importance. 
-
-\begin{algorithm}[htbp]
-	\small
-	\caption{Features Selection}
-	\label{alg:features_selection}
-	\begin{algorithmic}[1]
-		\REQUIRE
-		Features $X=\{ X_1, X_2, ... , X_n \}$,
-		The number of tree node $M$,
-		$GI_m$ Gini index of node $m$, 
-		$ K $ the number of target,
-		$ p_mk $ proportion of target $k$ in node $m$,
-		$ VIM_{jm}^{\small(Gini)} $ the importance of feature $X_j$ in node $m$ ,
-		$ n$ the tree number of RF.
-		\ENSURE
-		Variable Importance Measures $VIM_{j}^{\small(Gini)}$.
-		\STATE
-		Initialize $GI_m$ , 
-		$VIM_{j}^{\small(Gini)} $;
-		\FOR {$m \leftarrow 1...M$}
-		\FOR {$k \leftarrow 1...K$}
-		\STATE Compute the Gini index of node $m$
-		$GI_m = \sum_{k=1}^{|K|} \sum_{k'\neq k} {p_{mk}}{p_{mk'}}=1- \sum_{k=1}^{|K|} p^2_{mk}$
-		\ENDFOR
-		\STATE Divide node m into node r and node l
-		\STATE Compute the importance of feature $X_j$ in node $m$ 
-		$VIM_{jm}^{\small(Gini)} = GI_m-GI_l-GI_r $
-		\ENDFOR
-		\FOR {$i \leftarrow 1...N$}
-		\STATE Compute variable importance measures 
-		$VIM_{j}^{\small(Gini)} = VIM_{j}^{\small(Gini)} + VIM_{ij}^{\small(Gini)}$
-		\ENDFOR
-		\RETURN $VIM_{j}^{\small(Gini)}$
-	\end{algorithmic}
-    %\caption{Feature Selection Algorithm}
-\end{algorithm}
-
-\begin{figure}[htbp]
-	\centering
-	%\graphicspath{{figures/}{mine/}}
-	\includegraphics[scale=0.3]{figures/FEATURE.eps}
-	\caption{Feature Importance}\label{fig:feature_importance}
-\end{figure}
-
-I take these features 
-to form a new train datad.
-
-
-\section{Methods}
-
-There are many machine learning algorithms 
-for Time-series problem. 
-Choose the following algorithms
-as the base models of ensemble model,show the most important parameters.
+\subsubsection{Missing Values}
+Both training and test set have same ratio 
+of missing values in keyword and location.
+the fllowings ~\cref{fig:missing-values-of-keyword-and-location} are the  
+missing values of keyword and location.
 
 \begin{itemize}
-    \item Base Models
-	\
-\begin{itemize}
-	\item RandomForest 
-	\item XGBoost
-	\item LSTM
-	\item Linear regression
-	\item KNN
+	\item
+    0.8\% of keyword is missing in both training and test set
+	\item
+	33\% of location is missing in both training and test set
 \end{itemize}
-\item Ensemble Model
-\end{itemize}
-\subsection{Base Models}
-\
-
-The base models have many parameters,
-select the some parameters that 
-have a larger impact on 
-the forecast results,
-the use Grid Search to find 
-the optimal paratemers set.	
-The following is training result. 
-\subsubsection{RandomForest}
-\
-
-Random forest is a classifier with 
-multiple decision trees, and
-the output is determined by 
-the mode of the individual tree output.
 
 
-\begin{description}
-	\item[n_estimators] the number of decision trees
-	\item[criteriom] criterion of choosing 
-	the most appropriate node
-	\item[max_depth] The maximum depth of the tree, 
-	the default is None 
-	\item[max_features] The feature that is divided 
-	when selecting the optimal attribute 
-	cannot exceed this value.
-\end{description}
-                  
-	
-\subsubsection{XGBoost}
-\
- 
-XGBoost is to establish K regression trees 
-so that the predicted value of 
-the tree group is as close as possible to 
-the true value (accuracy) and 
-has the greatest generalization ability. 
-From a mathematical point of view, 
-this is a functional optimization, multi-target.
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[scale=0.3]{"Figures/Missing Values of Keyword and Location.pdf"}
+	\caption{Missing Values of Keyword and Location}
+	\label{fig:missing-values-of-keyword-and-location}
+\end{figure}
 
-\begin{description}
-	\item[learning_rate]  control the speed of each update
-	\item[n_estimators] number of iterations
-	\item[max_depth] the depth of tree
-	\item[gamma] penalty factor%惩罚系数
-	\item[subsample] the proportion of data used in 
-		all training sets when training each tree
-	\item[colsample_bytree] the proportion of features used 
-		in all trees when training each tree
-	\end{description}
+Since missing value ratios between training and test set 
+are too close, they are most probably taken from the 
+same sample. Missing values in those features are 
+filled with no\_keyword and no\_location respectively.
 
-\subsubsection{LSTM}
-\
+\subsubsection{Cardinality and Target Distribution}
 
-Long short-term memory (LSTM) is an artificial 
-recurrent neural network (RNN) 
-architecture used in the field of 
-deep learning. LSTM has feedback connections. 
-It can not only process single data 
-points (such as images), but also entire 
-sequences of data (such as speech or video). 
-	
-	
-\begin{description}
-	\item[units] Output dimension 
-		the number of neurons in the i-th hidden layer
-	\item[activation] activation function
-	\item[recurrent_activation] Activation function applied to the loop step
-	\item[use_bias] Boolean, whether to use bias term
-\end{description}
-
-\subsubsection{Linear regression}
-\
-
-Linear regression is a linear approach to 
-modeling the relationship between a scalar 
-response (or dependent variable) and one 
-or more explanatory variables (or 
-independent variables). 
-
-
-\begin{description}
-	\item[fit_intercept] whether to calculate the intercept for this model. If 
-	set to False, no intercept will be used in calculations 
-	the number of neurons in the i-th hidden layer
-	\item[normalize] This parameter is ignored when fit_intercept is set to 
-	False
-	\item[copy_X] If True, X will be copied; else, it may be overwritten
-	\item[n_jobs] The number of jobs to use for the computation
-\end{description}
-
-\subsubsection{KNN}
-\
-
-k-NN is a type of instance-based learning, 
-or lazy learning, where the function is 
-only approximated locally and all 
-computation is deferred until classification. 
-
-
-\begin{description}
-	\item[n_neighbors] Number of neighbors to use by default for kneighbors 
-	queries
-	\item[weights] weight function used in prediction. Possible values
-	\item[algorithm] Algorithm used to compute the nearest neighbors
-	\item[leaf_size] Leaf size passed to BallTree or KDTree
-\end{description}
-
-\subsection{Ensemble Model}
-\
-
-To combine the base models as 1st level 
-model predictions, I'll use a simple 
-linear regression. As I'm only feeding 
-the model with predictions 
-I don't need a complex model.
-
-\section{Experiment and Analysis}
-
-In the Data Exploration, 
-I has created some new feaures 
-and found some outliers.
-Because the number of outliers is very small, 
-after ignoring the outliers, the features 
-are selected for experiments based on their importance.
-And use the trained models as 
-the base models of ensemble model,
-then do experiment.
-%\WBJianginMarker
-
-\subsection{Base Models Training Result}
-
-The following are the best parameters and 
-the best Score in training of 
-the base models. 
+Locations are not automatically generated, they are user inputs. 
+That's why `location` is very dirty and there are too many 
+unique values in it. It shouldn't be used as a feature.
 
 \begin{itemize}
-	\item Best Parameters of Models
-	\begin{description}
-		\item[RandomForest] 'n_jobs': '-1', 'max_depth': 15, 
-		'random_state': 42, 'n_estimators': 25
-		\item[XGBoost] 'max_depth':10, 
-		'subsample':1,
-		'min_child_weight':0.5,
-		'eta':0.3, 
-		'num_round':1000, 
-		'seed':1,
-		'silent':0,
-		'eval_metric':'rmse'
-		\item[LSTM] "batch_size":128,
-		"verbose":2,
-		"epochs":10
-		\item[Linear regression] No other parameters required
-		\item[KNN] n_neighbors=9, leaf_size=13, n_jobs=-1
-	\end{description}
+	\item
+	Number of unique values in keyword: 222 (Training) - 222 (Test)
+	\item
+	Number of unique values in location: 3342 (Training) - 1603 (Test)
+\end{itemize}
 
+The fllowings ~\cref{fig:Target-Distribution-in-Keywords} shows that 
+there is signal in `keyword` because some of those words can only 
+be used in one context. Keywords have very different tweet counts 
+and target means. `keyword` can be used as a feature by itself or 
+as a word added to the text. Every single keyword in training set 
+exists in test set. If training and test set are from the same 
+sample, it is also possible to use target encoding on `keyword`.
 
-\subsection{Forecast Result of Base Models}
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[scale=0.3]{"Figures/Target Distribution in Keywords.pdf"}
+	\caption{Target Distribution in Keywords}
+	\label{fig:Target-Distribution-in-Keywords}
+\end{figure}
+
+\subsection{Meta Features}
 \
 
-From the  ~\Cref{tbl:best_score_base_models_old},
-it shows that the rmse of 
-each model, RandomForest and XGBoost 
-perform better, and there is not much 
-difference between the other models.
+Distributions of meta features in classes and datasets 
+can be helpful to identify disaster tweets. It looks 
+like disaster tweets are written in a more formal way 
+with longer words compared to non-disaster tweets 
+because most of them are coming from news agencies. 
+Non-disaster tweets have more typos than disaster tweets 
+because they are coming from individual users. The meta 
+features used for the analysis are;
 
-\begin{table}[h]  \centering
-	\caption{Best Score of the Base Models}
-	\label{tbl:best_score_base_models_old}
-	\begin{tabular}{ccccccc}
-		%\bottomrule
+\begin{description}
+	\item[word\_count] number of words in text.
+	\item[unique\_word\_count] number of unique words in text.
+	\item[stop\_word\_count] number of stop words in text.
+	\item[url\_count] number of urls in text.
+	\item[mean\_word\_length] average character count in words.
+	\item[char\_count] number of characters in text.
+	\item[punctuation\_count] number of punctuations in text.
+	\item[hashtag\_count] number of hashtags "\#" in text.
+	\item[mention\_count] number of mentions "@" in text.
+\end{description}
+
+The fllowings ~\cref{fig:Meta-feature-target-distribution} shows that 
+all of the meta features have very similar distributions in 
+training and test set which also proves that training and 
+test set are taken from the same sample.
+
+All of the meta features have information about target as 
+well, but some of them are not good enough such as `url\_count`, 
+`hashtag\_count` and `mention\_count`.
+
+On the other hand, `word\_count`, `unique\_word\_count`, 
+`stop\_word\_count`, `mean\_word\_length`, `char\_count`, 
+`punctuation\_count` have very different distributions 
+for disaster and non-disaster tweets. Those features 
+might be useful in models.
+
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[scale=0.1]{"Figures/Meta feature target distribution.pdf"}
+	\caption{Meta feature target distribution}
+	\label{fig:Meta-feature-target-distribution}
+\end{figure}
+
+
+
+\subsection{Target and N-grams}
+\subsubsection{Target}
+\
+
+The fllowings ~\cref{fig:Target-distribution} shows that 
+class distributions are 57\% for 0 (Not Disaster) and 43\% for 1 (Disaster). 
+Classes are almost equally separated so they don't require any 
+stratification by `target` in cross-validation. 
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.3]{figures/Target distribution.pdf}
+	\caption{Target distribution}
+	\label{fig:Target-distribution}
+\end{figure}
+
+\subsubsection{N-grams}
+\paragraph{Unigrams}
+The fllowings ~\cref{fig:Unigrams} shows that:
+\begin{itemize}
+	\item
+	Most common unigrams exist in both classes are mostly punctuations, 
+	stop words or numbers. It is better to clean them before modelling 
+	since they don't give much information about `target`.
+	\item
+	Most common unigrams in disaster tweets are already giving 
+	information about disasters. It is very hard to use some 
+	of those words in other contexts.
+	\item
+	Most common unigrams in non-disaster tweets are verbs. 
+	This makes sense because most of those sentences have informal 
+	active structure since they are coming from individual users.
+\end{itemize}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.3]{figures/Unigrams.pdf}
+	\caption{Unigrams}
+	\label{fig:Unigrams}
+\end{figure}
+
+\paragraph{Bigrams}
+There are no common bigrams exist in both classes  because the context is clearer.
+The fllowings ~\cref{fig:Bigrams} shows that:
+\begin{itemize}
+	\item
+	Most common bigrams in disaster tweets are giving more information about 
+	the disasters than unigrams, but punctuations have to be stripped from words.
+	\item
+	Most common bigrams in non-disaster tweets are mostly about reddit or 
+	youtube, and they contain lots of punctuations. Those punctuations have to be cleaned out of words as well.
+\end{itemize}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.3]{figures/Bigrams.pdf}
+	\caption{Bigrams}
+	\label{fig:Bigrams}
+\end{figure}
+
+\paragraph{Trigrams}
+There are no common trigrams exist in both classes  because the context is clearer.
+The fllowings ~\cref{fig:Bigrams} shows that:
+\begin{itemize}
+	\item
+	Most common trigrams in **disaster** tweets are very similar to bigrams. 
+	They give lots of information about disasters, but they may not provide any 
+	additional information along with bigrams.
+	\item
+	Most common trigrams in **non-disaster** tweets are also very similar to bigrams, and they contain even more punctuations.
+\end{itemize}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.3]{figures/Trigrams.pdf}
+	\caption{Trigrams}
+	\label{fig:Trigrams}
+\end{figure}
+
+
+\section{Embeddings and Text Cleaning}
+\subsubsection{Embeddings Coverage}
+
+When you have pre-trained embeddings, doing standard preprocessing 
+steps  might not be a good idea because some of the valuable 
+information can be lost. It is better to get vocabulary as close 
+to embeddings as possible. In order to do that, train vocab and 
+test vocab are created by counting the words in tweets.
+
+Text cleaning is based on the embeddings below:
+
+\begin{itemize}
+	\item GloVe-300d-840B
+	\item FastText-Crawl-300d-2M 
+\end{itemize}
+
+The fllowings ~\cref{tab:Embeddings-cover} shows that:
+                
+% Table generated by Excel2LaTeX from sheet 'Sheet1'
+\begin{table}[htbp]
+	\centering
+	\caption{Embeddings cover}
+	\begin{tabular}{lcccc}
 		\toprule
-		& RandomForest & XGBoost & LSTM & Linear regression & KNN\\
+		& \multicolumn{2}{c}{Training Set} & \multicolumn{2}{c}{Test Set} \\
 		\midrule
-		Train rmse & 0.8358 & 0.8327 & 0.9276 & 0.8572 & 0.6976\\
-		Validation rmse & 0.8810 & 0.8959 & 0.6611 & 0.8806 & 0.8946\\
+		& vocabulary & text  & vocabulary & text \\
+		\midrule
+		Glove & 52.06\% & 82.68\% & 57.21\% & 81.85\% \\
+		FastText & 51.52\% & 81.84\% & 56.55\% & 81.12\% \\
 		\bottomrule
-	\end{tabular}
-\end{table}
+	\end{tabular}%
+	\label{tab:Embeddings-cover}%
+\end{table}%
+	
+	
+\subsubsection{Text Cleaning}
+\
+ 
+Tweets require lots of cleaning but it is inefficient to 
+clean every single tweet because that would consume too 
+much time. A general approach must be implemented for cleaning.
+
+* The most common type of words that require cleaning in `oov` 
+have punctuations at the start or end. Those words doesn't have 
+embeddings because of the trailing punctuations. Punctuations `\#`, 
+`@`, `!`, `?`, `+`, `\&`, `-`, `\$`, `=`, `<`, `>`, `|`, `{`, `}`, 
+`^`, `'`, `(`, `)`,`[`, `]`, `*`, `\%`, `...`, `'`, `.`, `:`, `;` 
+are separated from words
+
+\begin{itemize}
+	\item
+	Special characters that are attached to words are removed completely.
+	\item
+	Contractions are expanded.
+	\item
+	Urls are removed.
+	\item
+	Character entity references are replaced with their actual symbols.
+	\item
+	Typos and slang are corrected, and informal abbreviations are written in their long forms.
+	\item
+	Some words are replaced with their acronyms and some words are grouped into one.
+	\item
+	Finally, hashtags and usernames contain lots of information about the context but they 
+	are written without spaces in between words so they don't have embeddings.Informational 
+	usernames and hashtags should be expanded but there are too many of them. 
+	I expanded as many as I could, but it takes too much time to run `clean` 
+	function after adding those replace calls.
 \end{itemize}
 
-\subsection{Forecast Result of Ensemble Model }
+As shown in the ~\cref{tab:Text-Cleaning} below:
+% Table generated by Excel2LaTeX from sheet 'Sheet1'
+\begin{table}[htbp]
+	\centering
+	\caption{Text Cleaning}
+	\begin{tabular}{cccc}
+		\toprule
+		\multicolumn{2}{c}{Special characters} & \multicolumn{2}{c}{Contractions} \\
+		\midrule
+		\textbackslash{}x89ÛÏWhen &  When & he's  &  he is \\
+		China\textbackslash{}x89Ûªs &  China's & there's &  there is \\
+		let\textbackslash{}x89Ûªs &  let's & We're &  We are \\
+		fromåÊwounds &  from wounds & That's &  That is \\
+		JapÌ\_n &  Japan & won't &  will not \\
+		Ì©    &  e    & they're &  they are \\
+		SuruÌ¤ &  Suruc & Can't &  Cannot \\
+		å£3million &  3 million & wasn't &  was not \\
+		\cmidrule{1-2}    \multicolumn{2}{c}{Character entity references} & don\textbackslash{}x89Ûªt &  do not \\
+		\cmidrule{1-2}    \&gt  & , >   & aren't &  are not \\
+		\&lt  & , <   & isn't &  is not \\
+		\&amp & , \&  & What's &  What is \\
+		\cmidrule{1-2}    \multicolumn{2}{c}{Typos, slang and informal abbreviations} & haven't &  have not \\
+		\cmidrule{1-2}    w/e   &  whatever & hasn't &  has not \\
+		w/    &  with & There's &  There is \\
+		USAgov &  USA government & He's  &  He is \\
+		recentlu &  recently & It's  &  It is \\
+		Ph0tos &  Photos & You're &  You are \\
+		amirite &  am I right & I'M   &  I am \\
+		exp0sed &  exposed & shouldn't &  should not \\
+		8/5/2015 &  2015-08-05 & I'm   &  I am \\
+		WindStorm &  Wind Storm & Isn't &  is not \\
+		8/6/2015 &  2015-08-06 & Here's &  Here is \\
+		10:38PM &  10:38 PM & you've &  you have \\
+		10:30pm &  10:30 PM & you\textbackslash{}x89Ûªve &  you have \\
+		16yr  &  16 year & we're &  we are \\
+		lmao  &  laughing my ass off & what's &  what is \\
+		TRAUMATISED &  traumatized & couldn't &  could not \\
+		\cmidrule{1-2}    \multicolumn{2}{c}{Acronyms} & we've &  we have \\
+		\cmidrule{1-2}    MH370 &  Malaysia Airlines Flight 370 & he'll &  he will \\
+		mÌ¼sica &  music & Y'all &  You all \\
+		okwx  &  Oklahoma City Weather & Weren't &  Were not \\
+		arwx  &  Arkansas Weather & Didn't &  Did not \\
+		gawx  &  Georgia Weather & they'll &  they will \\
+		scwx  &  South Carolina Weather & they'd &  they would \\
+		cawx  &  California Weather & DON'T &  DO NOT \\
+		tnwx  &  Tennessee Weather & That\textbackslash{}x89Ûªs &  That is \\
+		……    & ……    & ……    & …… \\
+		\bottomrule
+	\end{tabular}%
+	\label{tab:Text-Cleaning}%
+\end{table}%
+
+
+After text cleaning, the embedding coverage has been greatly improved.
+As shown in the ~\cref{Embeddings-cover-2} below:
+% Table generated by Excel2LaTeX from sheet 'Sheet1'
+\begin{table}[htbp]
+	\centering
+	\caption{Embeddings cover 2}
+	\begin{tabular}{lcccc}
+		\toprule
+		& \multicolumn{2}{c}{Training Set} & \multicolumn{2}{c}{Test Set} \\
+		\midrule
+		& vocabulary & text  & vocabulary & text \\
+		\midrule
+		Glove & 52.06\% & 82.68\% & 57.21\% & 81.85\% \\
+		FastText & 51.52\% & 81.84\% & 56.55\% & 81.12\% \\
+		\bottomrule
+	\end{tabular}%
+	\label{tab:Embeddings-cover-2}%
+\end{table}%
+
+
+\subsubsection{Cross-validation}
 \
 
-Ensemble model means using 
-more than 1 model to finish the prediction.
-The train rmse is 0.764973649571408.
+First of all, when the training/test sets are concatenated, 
+and tweet counts by `keyword` are computed, it can be seen 
+that training and test set are split inside `keyword` groups. 
+We can also come to that conclusion by looking at `id` feature. 
+This means every `keyword` are stratified while creating 
+training and test set. We can replicate the same split for cross-validation.
+
+Tweets from every `keyword` group exist in both training and 
+test set and they are from the same sample. In order to replicate 
+the same split technique, `StratifiedKFold` is used and `keyword` 
+is passed as `y`, so stratification is done based on the `keyword` 
+feature. `shuffle` is set to `True` for extra training diversity. 
+Both folds have tweets from every `keyword` group in training and 
+validation sets which can be seen from below.
+	
+
+\section{Model}
+\subsection{BERT Layer}
+This model uses the implementation of BERT from the TensorFlow Models 
+repository on GitHub at `tensorflow/models/official/nlp/bert`. It uses 
+L=12 hidden layers (Transformer blocks), a hidden size of H=768, and A=12 attention heads.
+
+This model has been pre-trained for English on 
+the Wikipedia and BooksCorpus. Inputs have been "uncased", 
+meaning that the text has been lower-cased before tokenization 
+into word pieces, and any accent markers have been stripped. In order to 
+download this model, `Internet` must be activated on the kernel.
+
+\subsection{Architecture}
+
+\begin{description}
+		\item[DisasterDetector] a wrapper that incorporates the cross-validation and metrics stated above
+		\item[max\_seq\_length] parameter can be used for tuning the sequence length of text
+		\item[plot\_learning\_curve] plots Accuracy, Precision, Recall and F1 Score (for validation set) 
+		stored after every epoch alongside with training/validation loss curve. This helps to see which 
+		metric fluctuates most while training
+\end{description}
+
+
+\subsection{Evaluation}
+\
+The  ~\Cref{tbl:Evaluation} below shows the changes 
+in the model's performance throughout the forecast process.
+
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[scale=0.3]{"Figures/Evaluation.pdf"}
+	\caption{Evaluation}
+	\label{fig:Evaluation}
+\end{figure}
 
 \section{Conclusion}
 
 \begin{itemize}
-	\item Exploratory data analysis is 
-	very important for the competition,
-	Discover the imperfections of the 
-	data and have a certain understanding 
-	of the overall appearance of the data, 
-	which will help later modeling and analysis. 
-	\item The data that we have,
-	needed processed in many cases.
-	Data preprocessing includes 
-	deal with missing data and outliers, 
-	We must think carefully about the outliers, 
-	such as ignoring them.
-	\item The most important thing is
-	feature engineering.
-	We have to think carefully and 
-	deal with outliers, such as ignoring 
-	or deleting them.
-	\item There is no best model, 
-	only the best model. We should 
-	try as many models as possible to 
-	get the best prediction results. 
-	\item Feature engineering is very 
-	important and even plays a decisive 
-	role in this competition.
-	\item The Ensemble model may perform better 
-	than a single model when dealing 
-	with some complex problems.	
+	\item Don't use standard preprocessing steps like stemming or 
+	stopword removal when you have pre-trained embeddings.
+	\item Get your vocabulary as close to the embeddings as possible.
+	\item Text cleaning requires patience and meticulousness. 
+	\item BERT does have an advantage over other models when 
+	used properly on NLP problems.
 \end{itemize}
 
 %\lstset{language=python}         
