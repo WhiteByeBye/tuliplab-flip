@@ -1,0 +1,414 @@
+\documentclass[
+ size=12pt,
+ paper=smartboard, %a4paper, smartboard, screen
+ mode=present, %present, handout, print
+ display=slides, % slidesnotes, notes, slides
+ style=tuliplab,  % TULIP Lab style
+ pauseslide,
+ fleqn,leqno,clock]{powerdot}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{rotating}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{boxedminipage}
+\usepackage{media9}
+\usepackage{rotate}
+\usepackage{calc}
+\usepackage[absolute]{textpos}
+\usepackage{psfrag,overpic}
+\usepackage{fouriernc}
+\usepackage{pstricks,pst-node,pst-text,pst-3d,pst-grad}
+\usepackage{moreverb,epsfig,color,subfigure}
+\usepackage{color}
+\usepackage{pstricks}
+\usepackage{pstricks-add}
+\usepackage{cleveref}
+\usepackage{pst-text}
+\usepackage{pst-node, pst-tree}
+\usepackage{booktabs}
+\usepackage{etex}
+\usepackage{breqn}
+\usepackage{multirow}
+% \usepackage{pst-rel-points}
+\usepackage{listings}
+\usepackage{hyperref}
+\hypersetup{ % TODO: PDF meta Data
+  pdftitle={Presentation Title},
+  pdfauthor={Gang Li},
+  pdfpagemode={FullScreen},
+  pdfborder={0 0 0} 
+}
+
+
+% \usepackage{auto-pst-pdf}
+% package to show source code
+
+\definecolor{LightGray}{rgb}{0.9,0.9,0.9}
+\newlength{\pixel}\setlength\pixel{0.000714285714\slidewidth}
+\setlength{\TPHorizModule}{\slidewidth}
+\setlength{\TPVertModule}{\slideheight}
+\newcommand\highlight[1]{\fbox{#1}}
+\newcommand\icite[1]{{\footnotesize [#1]}}
+
+\newcommand\twotonebox[2]{\fcolorbox{pdcolor2}{pdcolor2}{#1\vphantom{#2}}\fcolorbox{pdcolor2}{white}{#2\vphantom{#1}}}
+\newcommand\twotoneboxo[2]{\fcolorbox{pdcolor2}{pdcolor2}{#1}\fcolorbox{pdcolor2}{white}{#2}}
+\newcommand\vpspace[1]{\vphantom{\vspace{#1}}}
+\newcommand\hpspace[1]{\hphantom{\hspace{#1}}}
+\newcommand\COMMENT[1]{}
+
+\newcommand\placepos[3]{\hbox to\z@{\kern#1
+        \raisebox{-#2}[\z@][\z@]{#3}\hss}\ignorespaces}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% title
+%%% TODO: Customize to your Own Title, Name, Address
+%%%
+\title{FLIP(01) Final-term Presentation}
+\author{Rongxin Xu\\
+Hunan University
+% \href{mailto:gangli@acm.org}{gangli@acm.org}
+% \and % more authors
+}
+\date{27 February 2020}
+
+
+
+% Customize the setting of slides
+\pdsetup{
+% TODO: Customize the left footer, and right footer
+rf={\copyright \emph{FLIP(01)}},
+cf={FLIP(01) Presentation },
+}
+
+
+% Starts the document
+\begin{document}
+
+\maketitle
+
+%%==========================================================================================
+%%
+\begin{slide}[toc=,bm=]{Outline}
+  \tableofcontents[content=sections]
+\end{slide}
+%%
+%%==========================================================================================
+
+\section{Introduction}
+
+\begin{slide}{Problem Description}
+  \begin{itemize}
+    \item
+		The ubiquitousness of smartphones enables 
+		people to announce an emergency they’re 
+		observing in real-time. 
+          \begin{itemize}
+            \item
+				Predict whether a real disaster has occurred 
+				based on keywords, location, and Twitter text.
+          \end{itemize}
+  \end{itemize}
+\end{slide}
+
+\section{Data Description}
+%
+\begin{slide}{Attribute Information}
+  \begin{itemize}
+    \item<1->
+          Attributes Information
+    \item[1.]
+          There are 3 data sets.
+    \begin{description}
+    	\item[train.csv] the training set.
+    	\item[test.csv] the test set.
+    	\item[sample\_submission.csv] a sample submission file in the correct format.
+    \end{description}
+    \item[2.]
+          There are 3 data sets with a total of 5 attributes.
+\end{itemize}
+\begin{table}[htbp]
+	\centering
+	\caption{Attribute Information}
+	\begin{tabular}{llllll}
+	\hline
+	% after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
+	Attributes & Information                                                                            \\
+	\hline
+	id   & a unique identifier for each tweet                                                               \\
+	text    & the text of the tweet                                                                         \\
+	location     & the location the tweet was sent from (may be blank)                                      \\
+	keyword     & a particular keyword from the tweet (may be blank)                                        \\
+	target    &  in train.csv only, this denotes whether a tweet is about a real disaster (1) or not (0)    \\                                               \\
+	\hline
+	%\bottomrule
+\end{tabular}
+\end{table}
+\end{slide}
+
+
+\section{Exploratory Data Analysis}
+
+\begin{slide}{Missing Values of keyword and location}
+	Both training and test set have same ratio 
+	of missing values in keyword and location.
+	the fllowings ~\cref{fig:missing-values-of-keyword-and-location} are the  
+	missing values of keyword and location.
+	\begin{itemize}
+		\item
+		0.8\% of keyword is missing in both training and test set
+		\item
+		33\% of location is missing in both training and test set
+	\end{itemize}
+
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[scale=0.5]{"Figures/Missing Values of Keyword and Location.eps"}
+	\caption{Missing Values of Keyword and Location}
+	\label{fig:missing-values-of-keyword-and-location}
+\end{figure}
+\end{slide}
+
+\begin{slide}{Cardinality and Target Distribution}
+The cardinality distribution is:
+\begin{itemize}
+	\item
+	Number of unique values in keyword: 222 (Training) - 222 (Test)
+	\item
+	Number of unique values in location: 3342 (Training) - 1603 (Test)
+\end{itemize}
+The target distribution in keywords is ~\cref{fig:Target-Distribution-in-Keywords}:
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[scale=0.35]{"Figures/Target Distribution in Keywords.eps"}
+	\caption{Target Distribution in Keywords}
+	\label{fig:Target-Distribution-in-Keywords}
+\end{figure}
+\end{slide}
+
+
+\begin{slide}{Meta Features}
+Distributions of meta features in classes and datasets 
+can be helpful to identify disaster tweets.The meta 
+features used for the analysis are:
+
+\begin{description}
+	\item[word\_count] number of words in text.
+	\item[unique\_word\_count] number of unique words in text.
+	\item[stop\_word\_count] number of stop words in text.
+	\item[url\_count] number of urls in text.
+	\item[mean\_word\_length] average character count in words.
+	\item[char\_count] number of characters in text.
+	\item[punctuation\_count] number of punctuations in text.
+	\item[hashtag\_count] number of hashtags "\#" in text.
+	\item[mention\_count] number of mentions "@" in text.
+\end{description}
+\end{slide}
+
+\begin{slide}{Meta Features}
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[scale=0.3]{"Figures/Meta feature target distribution1.eps"}
+	\caption{Meta feature target distribution}
+\end{figure}
+\end{slide}
+
+\begin{slide}{Meta Features}
+	\begin{figure}[tbph]
+		\centering
+		\includegraphics[scale=0.3]{"Figures/Meta feature target distribution2.eps"}
+		\caption{Meta feature target distribution2}
+	\end{figure}
+\end{slide}
+
+\begin{slide}{Meta Features}
+	\begin{figure}[tbph]
+		\centering
+		\includegraphics[scale=0.3]{"Figures/Meta feature target distribution3.eps"}
+		\caption{Meta feature target distribution3}
+	\end{figure}
+\end{slide}
+
+\begin{slide}{Target distribution}
+The fllowings ~\cref{fig:Target-distribution} shows that 
+class distributions are 57\% for 0 (Not Disaster) and 43\% for 1 (Disaster). 
+\\
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{figures/Target distribution.eps}
+	\caption{Target distribution}
+	\label{fig:Target-distribution}
+\end{figure}
+\end{slide}
+
+\begin{slide}{Unigrams}
+Most common unigrams exist in both classes are mostly punctuations, stop words or numbers.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.3]{figures/Unigrams.eps}
+	\caption{Unigrams}
+	\label{fig:Unigrams}
+\end{figure}
+\end{slide}
+
+\begin{slide}{Bigrams}
+Most common bigrams in non-disaster tweets are mostly about reddit or youtube
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.3]{figures/Bigrams.eps}
+	\caption{Bigrams}
+	\label{fig:Bigrams}
+\end{figure}
+\end{slide}
+
+\begin{slide}{Trigrams}
+	Most common bigrams in non-disaster tweets are mostly about reddit or youtube
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[scale=0.3]{figures/Bigrams.eps}
+		\caption{Tigrams}
+	\end{figure}
+\end{slide}
+
+\section{Embeddings and Text Cleaning}
+\begin{slide}{Embeddings Coverage}
+When you have pre-trained embeddings, doing standard preprocessing 
+steps  might not be a good idea because some of the valuable 
+information can be lost.
+
+Text cleaning is based on the embeddings below:
+
+\begin{itemize}
+	\item GloVe-300d-840B
+	\item FastText-Crawl-300d-2M 
+\end{itemize}
+The fllowings ~\cref{tab:Embeddings-cover} shows that:
+
+% Table generated by Excel2LaTeX from sheet 'Sheet1'
+\begin{table}[htbp]
+	\centering
+	\caption{Embeddings cover}
+	\begin{tabular}{lcccc}
+		\toprule
+		& \multicolumn{2}{c}{Training Set} & \multicolumn{2}{c}{Test Set} \\
+		\midrule
+		& vocabulary & text  & vocabulary & text \\
+		\midrule
+		Glove & 52.06\% & 82.68\% & 57.21\% & 81.85\% \\
+		FastText & 51.52\% & 81.84\% & 56.55\% & 81.12\% \\
+		\bottomrule
+	\end{tabular}%
+	\label{tab:Embeddings-cover}%
+\end{table}%
+\end{slide}
+
+\begin{slide}{Text Cleaning}
+The most common type of words that require cleaning in `oov` 
+have punctuations at the start or end.
+	
+% Table generated by Excel2LaTeX from sheet 'Sheet1'
+\begin{table}[htbp]
+	\centering
+	\caption{Text Cleaning}
+	\begin{tabular}{cccc}
+		\toprule
+		\multicolumn{2}{c}{Special characters} & \multicolumn{2}{c}{Contractions} \\
+		\midrule
+		\textbackslash{}x89ÛÏWhen &  When & he's  &  he is \\
+		China\textbackslash{}x89Ûªs &  China's & there's &  there is \\
+		let\textbackslash{}x89Ûªs &  let's & We're &  We are \\
+		fromåÊwounds &  from wounds & That's &  That is \\
+		JapÌ\_n &  Japan & won't &  will not \\
+		Ì©    &  e    & they're &  they are \\
+		SuruÌ¤ &  Suruc & Can't &  Cannot \\
+		å£3million &  3 million & wasn't &  was not \\
+		\cmidrule{1-2}    \multicolumn{2}{c}{Character entity references} & don\textbackslash{}x89Ûªt &  do not \\
+		\cmidrule{1-2}    \&gt  & , >   & aren't &  are not \\
+		\&lt  & , <   & isn't &  is not \\
+		\&amp & , \&  & What's &  What is \\
+		……    & ……    & ……    & …… \\
+		\bottomrule
+	\end{tabular}%
+\end{table}%
+\end{slide}
+
+\begin{slide}{Text Cleaning}
+After text cleaning, the embedding coverage has been greatly improved.
+As shown in the ~\cref{Embeddings-cover-2} below:
+% Table generated by Excel2LaTeX from sheet 'Sheet1'
+\begin{table}[htbp]
+	\centering
+	\caption{Embeddings cover 2}
+	\begin{tabular}{lcccc}
+		\toprule
+		& \multicolumn{2}{c}{Training Set} & \multicolumn{2}{c}{Test Set} \\
+		\midrule
+		& vocabulary & text  & vocabulary & text \\
+		\midrule
+		Glove & 52.06\% & 82.68\% & 57.21\% & 81.85\% \\
+		FastText & 51.52\% & 81.84\% & 56.55\% & 81.12\% \\
+		\bottomrule
+	\end{tabular}%
+	\label{tab:Embeddings-cover-2}%
+\end{table}%
+\end{slide}
+
+\section{Modeling and Model Evaluation}
+\begin{slide}{BERT Layer}
+	I use the implementation of BERT from the TensorFlow Models 
+	repository on GitHub
+  \begin{itemize}
+    \item bert\_en\_uncased\_L-12\_H-768\_A-12/1
+  \end{itemize}
+\end{slide}
+
+\begin{slide}{Evaluation}
+The  ~\Cref{tbl:Evaluation} below shows the changes 
+in the model's performance throughout the forecast process.
+
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[scale=0.3]{"Figures/Evaluation.eps"}
+	\caption{Evaluation}
+	\label{fig:Evaluation}
+\end{figure}
+\end{slide}
+
+\section{Conclusion}
+\begin{slide}{Conclusion}
+\begin{itemize}
+	\item Don't use standard preprocessing steps like stemming or 
+	stopword removal when you have pre-trained embeddings.
+	\item Get your vocabulary as close to the embeddings as possible.
+	\item Text cleaning requires patience and meticulousness. 
+	\item BERT does have an advantage over other models when 
+	used properly on NLP problems.
+\end{itemize}
+\end{slide}
+
+
+\begin{wideslide}[toc=,bm=]{}
+  \centering
+  \vspace{\stretch{1}}
+  \twocolumn[
+    lcolwidth=0.35\linewidth,
+    rcolwidth=0.65\linewidth
+  ]
+  {
+    % \centerline{\includegraphics[scale=.2]{tulip-logo.eps}}
+  }
+  {
+    \vspace{\stretch{1}}
+
+
+    \textcolor{black}{\scalebox{2.0}{Thank you \& Question}}
+
+
+  }
+  \vspace{\stretch{1}}
+\end{wideslide}
+
+\end{document}
+\endinput

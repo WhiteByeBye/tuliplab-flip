@@ -1,0 +1,75 @@
+\documentclass{amsart}
+\synctex=1
+
+%=================================================================
+% 
+\newcount\DraftStatus  % 0 suppresses notes to selves in text
+\DraftStatus=1   % TODO: set to 0 for final version
+%=================================================================
+
+%=================================================================
+\usepackage{comment}
+\usepackage{gitinfo2}
+%=================================================================
+%
+\includecomment{JournalOnly}  
+\includecomment{ConferenceOnly}  
+\includecomment{TulipStyle}
+%
+%=================================================================
+\input{preamble}
+
+
+%=================================================================
+%
+\begin{document}
+%
+%=================================================================
+%
+\title[Xu's report]{Flip01 Final Presetantion Report}%
+
+\author{Rongxin Xu}
+\address[A.~1]{School of Business Administration,\\ 
+Hunan University, Changsha 410012, China}%
+\email[A.~1]{rongxin\_xu@163.com}
+
+%\thanks{Thanks to \ldots}%
+\subjclass{Natural Language Processing}%
+\keywords{NLP, BERT, ...}%
+\date{\gitAuthorDate}%
+
+\begin{abstract}
+This report is about natural language processing,
+which contains five parts. 
+First, introduce the definition of the problem,
+describe the data and analyze the problem. 
+Second, exploratory data analysis was performed 
+on some fields of the dataset, and meta-features and 
+N-grams were analyzed. Find some features that can be used 
+to predict and conclude that the test and training sets 
+are from the same sample. 
+Third, use pre-trained models for word embedding 
+and text cleaning, which greatly improves embedding 
+coverage and makes predictions more accurate.
+Fourth, Model and predict with BERT, and evaluate the model.
+The last one is conclusion. 
+\end{abstract}
+
+\maketitle
+\tableofcontents
+
+\newpage
+%=================================================================
+
+\input{mainbody}
+
+% ----------------------------------------------------------------
+\newpage
+\bibliography{tuliplab,mybib}
+\bibliographystyle{plainnat}
+%=================================================================
+
+\listoftodos
+
+\end{document}
+
