@@ -239,4 +239,5 @@ TSWLatexianTemp*
 *.sta
 
 # generated if using elsarticle.cls
-*.spl
+/Data/flip-01/glove.840B.300d.pkl
+/Data/flip-01/crawl-300d-2M.pkl
